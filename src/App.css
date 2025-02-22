@@ -1,8 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap');
 
 
+:root {
+  --primary: #38bdf8; /* Tailwind Blue */
+  --secondary: #0f172a; /* Dark Background */
+  --text-primary: #e2e8f0; /* Light Gray Text */
+  --text-secondary: #94a3b8; /* Muted Gray */
+}
+
 body {
   font-family: 'Nunito', sans-serif;
+  background-color: var(--secondary);
+  color: var(--text-primary);
+}
+
+/* Custom navbar styling */
+.navbar {
+  background-color: rgba(15, 23, 42, 0.9); /* Dark Transparent */
+  backdrop-filter: blur(10px);
+  padding: 1rem;
 }
 
 .active {
