@@ -45,6 +45,7 @@ const Home = () => {
     setSelectedCategory(event.target.value);
   }
 
+
   const FilteredData = (jobs, selected, query) => {
     let filteredJobs = jobs;
 
@@ -65,9 +66,9 @@ const Home = () => {
     return filteredJobs.map((data, i) => <Card key={i} data={data} />);
   };
 
-
-
   const result = FilteredData(jobs, selectedCategory, query);
+
+  //
 
   return (
     <div>
@@ -77,20 +78,25 @@ const Home = () => {
         {/* MAIN CONTENT */}
 
         {/* LEFT cards */}
-        <div className='bg-teal-300 z-10 bg-opacity-10 p-4 rounded'>
+        <div className='z-10 bg-opacity-5 p-4 rounded shadow-md shadow-cyan-500'>
+          {/*  bg-teal-300 */}
           <Sidebar handleChange={handleChange} handleClick={handleClick} />
         </div>
 
         {/* job cards */}
-        <div className='col-span-2 z-10 bg-teal-800 bg-opacity-10 p-4 rounded-lg'>
+        <div className='col-span-2 z-10  bg-opacity-10 p-4 rounded-lg shadow-xl shadow-cyan-500'>
+          {/* bg-teal-800 */}
           {
-
+            isLoading ? (<p className='font-bold'>Loading....</p>) : result.length > 0 ? (<Jobs result={result} />) :
+              <> <h3 className='text-lg font-bold mb-2'> {result.length} jobs</h3>
+                <p>No data found</p> </>
           }
-          <Jobs result={result} />
+
         </div>
 
         {/* RIGHT cards */}
-        <div className='bg-teal-300 z-10 bg-opacity-10 p-4 rounded'>Right</div>
+        <div className='z-10 bg-opacity-5 p-4 rounded shadow-md shadow-cyan-500'>Right</div>
+        {/* bg-teal-300  */}
 
       </div>
 

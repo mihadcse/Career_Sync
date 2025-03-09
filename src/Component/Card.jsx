@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { FiCalendar, FiClock, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const Card = ({ data }) => {
   const { companyName,jobLocation,companyLogo,jobTitle, minPrice, maxPrice, salaryType, employmentType, postingDate, description } = data;
 
   return (
-    <section className='card border border-cyan-300 p-4 rounded-lg shadow-lg hover:border-cyan-400 transition duration-300'>
+    <section className='card border border-cyan-300 p-4 rounded-lg shadow-lg hover:border-cyan-400 hover:shadow-md hover:shadow-cyan-500 hover:bg-gray-800 transition duration-300'>
       <Link to={"/"} className='flex gap-4 flex-col sm:flex-row items-start'>
         <img src={companyLogo} alt={`${companyName} logo`} />
         <div>
@@ -17,7 +17,7 @@ const Card = ({ data }) => {
           <div className='text-primary/70 text-base flex flex-wrap gap-2 mb-2'>
               <span className='flex items-center gap-2 text-white'><FiMapPin/> {jobLocation} </span>
               <span className='flex items-center gap-2 text-white'><FiClock/> {employmentType} </span>
-              <span className='flex items-center gap-2 text-white'><FiDollarSign/> {maxPrice} - {minPrice} </span>
+              <span className='flex items-center gap-2 text-white'><span>৳</span>{maxPrice} - {minPrice} </span>
               <span className='flex items-center gap-2 text-white'><FiCalendar/> {postingDate} </span>
               <span className='flex items-end gap-2'></span>
           </div>
