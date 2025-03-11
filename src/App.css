@@ -21,62 +21,12 @@ body {
   padding: 1rem;
 }
 
-.active {
-  color: #3575E2;
-  font-weight: 500;
-}
-
-a {
-  text-decoration: none;
-}
-
-li {
-  list-style: none;
-}
-
-.btns {
-  padding: 10px 20px;
-  margin-right: 6px;
-  background: transparent;
-  border: none;
-  border: 0.6px solid #ccc;
-  border-radius: 5px;
-  color: #323232;
-  cursor: pointer;
-}
-
-/* jobs page */
 
 .card {
   margin: 20px;
   border: 2px solid #ededed;
   padding: 20px;
   cursor: pointer;
-}
-
-
-.card-title {
-  margin-bottom: 1rem;
-}
-
-.card-reviews {
-  margin-bottom: 1rem;
-  display: flex;
-}
-
-.rating-star {
-  color: #d5ab55;
-}
-
-.total-reviews {
-  font-size: 0.9rem;
-  margin-left: 10px;
-}
-
-.card-price {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .bag-icon {
@@ -99,9 +49,6 @@ li {
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -117,8 +64,8 @@ li {
   left: 0;
   height: 20px;
   width: 20px;
-  background-color: #eee;
-  border-radius: 50%;
+  background-color: #346c70;
+  border-radius: 75%;
 }
 
 .all {
@@ -152,19 +99,6 @@ li {
   background: white;
 }
 
-.line {
-  margin-top: 3rem;
-  border-color: #f7f7f7;
-}
 
 
 
-/* create a job page */
-
-.create-job-flex {
-  @apply flex flex-col lg:flex-row items-center justify-between gap-8;
-}
-
-.create-job-input {
-  @apply block w-full flex-1 bg-white py-1.5 pl-3 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6
-}

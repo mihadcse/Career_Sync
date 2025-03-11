@@ -1,33 +1,3 @@
-// import React from 'react';
-// import InputField from '../Component/InputField';
-
-
-// const Location = ({ handleChange }) => {
-//   return (
-//     <div>
-//       <h4 className='text-lg font-medium mb-2 text-gray-400'>Location</h4>
-
-//       <div>
-//         <label className='sidebar-label-container'>
-//           <input type="radio" name='location' value="" onChange={handleChange} />
-//           <span className='checkmark'></span> All
-//         </label>
-
-//         <InputField handleChange={handleChange} value="london" title="London" name="location" />
-
-//         <InputField handleChange={handleChange} value="seattle" title="Seattle" name="location" />
-
-//         <InputField handleChange={handleChange} value="madrid" title="Madrid" name="location" />
-
-//         <InputField handleChange={handleChange} value="boston" title="Boston" name="location" />
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Location;
-
 
 import React from 'react';
 import InputField from '../Component/InputField';
@@ -42,7 +12,7 @@ const Location = ({ handleChange }) => {
         <label className='sidebar-label-container flex items-center gap-2 cursor-pointer'>
           <input type="radio" name='location' value="" onChange={handleChange} />
           <span className='checkmark'></span> 
-          <span className="text-gray-400 hover:text-cyan-400 transition duration-200">All</span> {/* Added hover effect */}
+          <span className="text-gray-400 hover:text-cyan-400 transition duration-200">All</span>
         </label>
 
         {/* Other Locations */}
