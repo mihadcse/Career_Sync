@@ -31,14 +31,14 @@ const Banner = ({ query, handleInputChange }) => {
                             <FiSearch className='absolute mt-2.5 ml-2 text-gray-300' />
                         </div>
 
-                        <div className='flex md:rounded-md rounded shadow-lg ring-1 ring-cyan-400
+                        {/* <div className='flex md:rounded-md rounded shadow-lg ring-1 ring-cyan-400
                                         focus-within:ring-2 focus-within:ring-cyan-400
                                         md:w-1/3 w-full bg-white/30 backdrop-blur-lg'>
                             <input type="text" name='location' id='location' placeholder='Location?'
                                 className='block flex-1 border-none bg-transparent py-2 pl-8 text-white text-md font-semibold placeholder:text-gray-200 
                                         focus:outline-none sm:text-sm sm:leading-6' />
                             <FiMapPin className='absolute mt-2.5 ml-2 text-gray-300' />
-                        </div>
+                        </div> */}
 
                         <button type='submit' className='py-2 px-5 border border-cyan-400 rounded bg-cyan-800
                          text-white font-bold hover:bg-cyan-400 hover:border-cyan-400 transition duration-300'>Search</button>
