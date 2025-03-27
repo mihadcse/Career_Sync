@@ -8,7 +8,9 @@ function App() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <div className="pt-3">
+        <Outlet />
+      </div>
     </>
   )
 }
