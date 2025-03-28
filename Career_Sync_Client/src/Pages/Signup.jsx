@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
+ 
 const Signup = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     companyName: '',
-    companyWebsite: '',
+    Website: '',
     location: '',
     jobTitle: '',
     resume: ''
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,9 +26,48 @@ const Signup = () => {
     setFormData({ ...formData, resume: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Registering:', formData);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (userType === 'company') {
+      const companyData = {
+        name: formData.companyName, 
+        email: formData.email,
+        password: formData.password,
+        location: formData.location,
+        website: formData.Website
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/register-company', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(companyData)
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setSuccessMessage('Company registered successfully!');
+          alert('Company registered successfully!');
+
+          // Redirect to home page after 2 seconds
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+        } else {
+          setErrorMessage(data.error || 'Registration failed.');
+        }
+      } catch (error) {
+        setErrorMessage('Error connecting to server.');
+      }
+    } else {
+      console.log('Registering as a Job Aspirant:', formData);
+
+    }
   };
 
   return (
@@ -77,6 +121,8 @@ const Signup = () => {
               <label className='block mb-1'>Password</label>
               <input type='password' name='password' value={formData.password} onChange={handleInputChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
             </div>
+            {errorMessage && <p className='text-red-400 text-center'>{errorMessage}</p>}
+            {successMessage && <p className='text-cyan-300 text-center'>{successMessage}</p>}
             <button type='submit' className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-lg py-2 rounded hover:bg-cyan-400 transition duration-300'>Register</button>
           </form>
         )}
