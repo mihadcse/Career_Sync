@@ -15,17 +15,28 @@ const Home = () => {
   const itemsPerPage = 6;
 
   // Fetching from json file
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   fetch("jobs.json").then(res => res.json()).then((data) => {
+  //     setJobs(data);
+  //     setIsLoading(false);
+  //   }).catch((error) => console.error("Error fetching jobs:", error));
+  // }, []);
+
+  // Fetching from MongoDB 
   useEffect(() => {
     setIsLoading(true);
-    fetch("jobs.json").then(res => res.json()).then((data) => {
-      setJobs(data);
-      setIsLoading(false);
-    }).catch((error) => console.error("Error fetching jobs:", error));
+    fetch("http://localhost:3000/api/jobs")
+      .then((res) => res.json())
+      .then((data) => {
+        setJobs(data);  // Set the fetched jobs into the state
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching jobs:", error);
+        setIsLoading(false); // Handle loading state even on error
+      });
   }, []);
-
-  
-
-  //console.log(jobs);
 
   const [query, setQuery] = useState("");
 
