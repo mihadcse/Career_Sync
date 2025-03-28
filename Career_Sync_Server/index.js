@@ -28,6 +28,23 @@ app.post('/api/post-job', async (req, res) => {
     try {
         const jobData = req.body;
 
+        // Check if a job with the same company name, job title, and location already exists
+        const existingJob = await Job.findOne({
+            companyName: jobData.companyName,
+            jobTitle: jobData.jobTitle,
+            jobLocation: jobData.jobLocation,
+            minPrice: jobData.minPrice,
+            maxPrice: jobData.maxPrice,
+            salaryType: jobData.salaryType,
+            postingDate: jobData.postingDate,
+            experienceLevel: jobData.experienceLevel,
+            employmentType: jobData.employmentType,
+        });
+
+        if (existingJob) {
+            return res.status(400).json({ error: "This job has already been posted." });
+        }
+
         // Create a new job instance
         const newJob = new Job(jobData);
 
