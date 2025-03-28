@@ -2,7 +2,10 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'; // For password hashing
+
 import Job from './jobs.js'
+import Company from './company.js';
 
 
 const app = express()
@@ -65,6 +68,38 @@ app.get('/api/jobs', async (req, res) => {
         res.status(200).json(jobs);  // Send the fetched jobs as a response
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Company Registration Route
+app.post('/api/register-company', async (req, res) => {
+    try {
+        const { name, email, password, location, website } = req.body;
+
+        // Check if the company already exists
+        const existingCompany = await Company.findOne({ email });
+        if (existingCompany) {
+            return res.status(400).json({ error: "Company with this email already exists." });
+        }
+
+        // Hash the password before saving
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new company instance
+        const newCompany = new Company({
+            name,
+            email,
+            password: hashedPassword,
+            location,
+            website 
+        });
+
+        // Save to database
+        await newCompany.save();
+
+        res.status(201).json({ message: "Company registered successfully", company: newCompany });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 
