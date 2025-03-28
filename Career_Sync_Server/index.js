@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+// Create a new job
 app.post('/api/post-job', async (req, res) => {
     try {
         const jobData = req.body;
@@ -38,6 +39,18 @@ app.post('/api/post-job', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
+
+// Get all jobs 
+app.get('/api/jobs', async (req, res) => {
+    try {
+        // Fetch all jobs from MongoDB
+        const jobs = await Job.find();
+        res.status(200).json(jobs);  // Send the fetched jobs as a response
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

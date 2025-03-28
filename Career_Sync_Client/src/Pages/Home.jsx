@@ -14,7 +14,7 @@ const Home = () => {
   const [currentpage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-
+  // Fetching from json file
   useEffect(() => {
     setIsLoading(true);
     fetch("jobs.json").then(res => res.json()).then((data) => {
@@ -22,6 +22,8 @@ const Home = () => {
       setIsLoading(false);
     }).catch((error) => console.error("Error fetching jobs:", error));
   }, []);
+
+  
 
   //console.log(jobs);
 
