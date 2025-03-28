@@ -9,6 +9,14 @@ const port = process.env.PORT || 3000
 
 dotenv.config()
 
+//middleware
+app.use(express.json());
+app.use(cors());
+
+mongoose.connect(process.env.MONGODBURL)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.log(err));
+;
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
