@@ -17,12 +17,8 @@ const JobAspirantSchema = new mongoose.Schema({
     resume: {
         type: String, // Store the file path or URL
         required: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true });
 
 const JobAspirant = mongoose.model('JobAspirant', JobAspirantSchema);
 export default JobAspirant;

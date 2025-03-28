@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt'; // For password hashing
 
 import Job from './jobs.js'
 import Company from './company.js';
+import JobAspirant from './jobaspirant.js';
 
 
 const app = express()
@@ -103,6 +104,36 @@ app.post('/api/register-company', async (req, res) => {
     }
 });
 
+// Job Aspirant Registration Route
+app.post('/api/register-job-aspirant', async (req, res) => {
+    try {
+        const { name, email, password, resume } = req.body;
+
+        // Check if the aspirant already exists
+        const existingAspirant = await JobAspirant.findOne({ email });
+        if (existingAspirant) {
+            return res.status(400).json({ error: "Job aspirant with this email already exists." });
+        }
+
+        // Hash the password before saving
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new job aspirant instance
+        const newAspirant = new JobAspirant({
+            name,
+            email,
+            password: hashedPassword,
+            resume
+        });
+
+        // Save to database
+        await newAspirant.save();
+
+        res.status(201).json({ message: "Job aspirant registered successfully", aspirant: newAspirant });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
