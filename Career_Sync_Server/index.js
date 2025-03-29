@@ -93,7 +93,7 @@ app.post('/api/register-company', async (req, res) => {
             email,
             password: hashedPassword,
             location,
-            website 
+            website
         });
 
         // Save to database
@@ -174,6 +174,19 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Statistics page
+app.get("/api/statistics", async (req, res) => {
+    try {
+        const totalJobaspirants = await JobAspirant.countDocuments();
+        const totalCompany = await Company.countDocuments();
+        const totalJobs = await Job.countDocuments();
+
+        res.json({ totalJobaspirants, totalCompany, totalJobs});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
