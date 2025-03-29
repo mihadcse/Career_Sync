@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import "../App.css"
 
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
-import CompanyDashboard from '../Pages/CompanyDashboard';
-import ProtectedRoute from './ProtectedRoute';
-import JobAspirantDashboard from '../Pages/JobAspirantDashboard';
 
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [role, setRole] = useState(null);
+    // to track when localStorage has been checked
+    const [isAuthChecked, setIsAuthChecked] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation(); // ✅ Get the current route
 
     useEffect(() => {
         // Check if token exists in localStorage
@@ -20,7 +20,12 @@ const Navbar = () => {
         const userRole = localStorage.getItem("role");
         setIsLoggedIn(!!token);
         setRole(userRole);
-    }, []);
+        setIsAuthChecked(true); // Mark authentication as checked
+    },  [location.pathname]); // // ✅ Re-run effect when route changes
+
+    if (!isAuthChecked) {
+        return null; // Prevents rendering incorrect navbar for a split second
+    }
 
     const handleMenuToggler = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -39,7 +44,7 @@ const Navbar = () => {
         ? role === "company"
             ? [{ path: "/company-dashboard", title: "Dashboard" }, { path: "/companies", title: "Companies" }]
             : [{ path: "/job-aspirant-dashboard", title: "Dashboard" }, { path: "/companies", title: "Companies" }]
-        : [
+        : [ 
             { path: "/my-job", title: "My Jobs" },
             { path: "/salary", title: "Estimated Salary" },
             { path: "/post-job", title: "Post a Job" },
