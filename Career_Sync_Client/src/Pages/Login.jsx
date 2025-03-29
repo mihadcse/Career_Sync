@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Logging in with:', { email, password });
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
+        //setErrorMessage(data.error || 'Login failed');
+      }
+
+      // Store token and role in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.role);
+
+      // Redirect based on role
+      if (data.role === 'company') {
+        navigate('/company-dashboard');
+      } else {
+        navigate('/job-aspirant-dashboard');
+      }
+
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+    //console.log('Logging in with:', { email, password });
   };
 
   return (
@@ -34,6 +67,7 @@ const Login = () => {
               required
             />
           </div>
+          {errorMessage && <p className='text-red-400 text-center'>{errorMessage}</p>}
           <button
             type='submit'
             className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-xl py-2 rounded hover:bg-cyan-400 transition duration-300'>
