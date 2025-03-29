@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'; // For password hashing
+import jwt from 'jsonwebtoken';
 
 import Job from './jobs.js'
 import Company from './company.js';
@@ -131,6 +132,46 @@ app.post('/api/register-job-aspirant', async (req, res) => {
         res.status(201).json({ message: "Job aspirant registered successfully", aspirant: newAspirant });
     } catch (error) {
         res.status(400).json({ error: error.message });
+    }
+});
+
+// Login 
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Check if the user is a company
+        let user = await Company.findOne({ email });
+        let role = 'company';
+
+        if (!user) {
+            // If not a company, check if it's a job aspirant
+            user = await JobAspirant.findOne({ email });
+            role = 'job_aspirant';
+        }
+
+        if (!user) {
+            return res.status(400).json({ error: "Invalid email or password." });
+        }
+
+        // Compare password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: "Invalid email or password." });
+        }
+
+        // Generate JWT Token
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+        res.status(200).json({ message: "Login successful", token, role });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
