@@ -29,7 +29,7 @@ const router = createBrowserRouter([
             {
                 path: "/job-aspirant-dashboard",
                 element: (
-                    <ProtectedRoute allowedRoles={["jobAspirant"]}>
+                    <ProtectedRoute allowedRoles={["job_aspirant"]}>
                         <JobAspirantDashboard />
                     </ProtectedRoute>
                 ),
