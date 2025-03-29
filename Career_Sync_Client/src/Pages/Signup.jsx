@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
- 
+
 const Signup = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState(null);
@@ -11,8 +11,6 @@ const Signup = () => {
     companyName: '',
     Website: '',
     location: '',
-    jobTitle: '',
-    resume: ''
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,16 +29,19 @@ const Signup = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
-    if (userType === 'company') {
-      const companyData = {
-        name: formData.companyName, 
-        email: formData.email,
-        password: formData.password,
-        location: formData.location,
-        website: formData.Website
-      };
+    try {
+      let response;
+      let data;
 
-      try {
+      if (userType === 'company') {
+        const companyData = {
+          name: formData.companyName,
+          email: formData.email,
+          password: formData.password,
+          location: formData.location,
+          website: formData.Website
+        };
+
         const response = await fetch('http://localhost:3000/api/register-company', {
           method: 'POST',
           headers: {
@@ -48,40 +49,53 @@ const Signup = () => {
           },
           body: JSON.stringify(companyData)
         });
+      } else {
+        // **Job Aspirant Registration Request**
+        const aspirantData = {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        };
 
-        const data = await response.json();
-        if (response.ok) {
-          setSuccessMessage('Company registered successfully!');
-          alert('Company registered successfully!');
-
-          // Redirect to home page after 2 seconds
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
-        } else {
-          setErrorMessage(data.error || 'Registration failed.');
-        }
-      } catch (error) {
-        setErrorMessage('Error connecting to server.');
+        response = await fetch('http://localhost:3000/api/register-job-aspirant', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(aspirantData),
+        });
       }
-    } else {
-      console.log('Registering as a Job Aspirant:', formData);
 
+      data = await response.json();
+      if (response.ok) {
+        setSuccessMessage('Registation successful!');
+        //alert('Registation successful');
+
+        // Redirect to home page after 2.5 seconds
+        setTimeout(() => {
+          navigate('/');
+        }, 2500);
+      } else {
+        setErrorMessage(data.error || 'Registration failed.');
+      }
+    } catch (error) {
+      setErrorMessage('Error connecting to server.');
     }
   };
+
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-black/30 px-4 mt-10'>
       <div className='bg-opacity-10 p-8 rounded-lg shadow-xl shadow-cyan-500 w-full max-w-md text-white'>
         <h2 className='text-center text-2xl font-bold mb-4'>Register</h2>
-        
+
         {!userType ? (
           <div className='space-y-4'>
-            <button 
-              className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-lg py-2 rounded hover:bg-cyan-400 transition duration-300' 
+            <button
+              className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-lg py-2 rounded hover:bg-cyan-400 transition duration-300'
               onClick={() => setUserType('company')}>Register as Company</button>
-            <button 
-              className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-lg py-2 rounded hover:bg-cyan-400 transition duration-300' 
+            <button
+              className='w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-lg py-2 rounded hover:bg-cyan-400 transition duration-300'
               onClick={() => setUserType('professional')}>Register as Job aspirant</button>
           </div>
         ) : (
