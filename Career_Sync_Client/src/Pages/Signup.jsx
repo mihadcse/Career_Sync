@@ -42,7 +42,7 @@ const Signup = () => {
           website: formData.Website
         };
 
-        const response = await fetch('http://localhost:3000/api/register-company', {
+        response = await fetch('http://localhost:3000/api/register-company', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -108,11 +108,28 @@ const Signup = () => {
                 </div>
                 <div>
                   <label className='block mb-1'>Company Website</label>
-                  <input type='url' name='companyWebsite' value={formData.companyWebsite} onChange={handleInputChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
+                  <input type='url' name='Website' value={formData.Website} onChange={handleInputChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
                 </div>
+                {/* Select Box for Location */}
                 <div>
                   <label className='block mb-1'>Location</label>
-                  <input type='text' name='location' value={formData.location} onChange={handleInputChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
+                  <select
+                    name='location'
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className='w-full p-2 rounded bg-gray-950 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500'
+                    required
+                  >
+                    <option value='' disabled>Select a location</option>
+                    <option value='Dhaka'>Dhaka</option>
+                    <option value='Chattogram'>Chattogram</option>
+                    <option value='Sylhet'>Sylhet</option>
+                    <option value='Mymensingh'>Mymensingh</option>
+                    <option value='Rangpur'>Rangpur</option>
+                    <option value='Barishal'>Barishal</option>
+                    <option value='Khulna'>Khulna</option>
+                    <option value='Rajshahi'>Rajshahi</option>
+                  </select>
                 </div>
               </>
             ) : (
