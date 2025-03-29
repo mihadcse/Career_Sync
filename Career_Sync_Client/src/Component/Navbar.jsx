@@ -12,7 +12,7 @@ const Navbar = () => {
     // to track when localStorage has been checked
     const [isAuthChecked, setIsAuthChecked] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation(); // ✅ Get the current route
+    const location = useLocation(); // Get the current route
 
     useEffect(() => {
         // Check if token exists in localStorage
@@ -21,7 +21,7 @@ const Navbar = () => {
         setIsLoggedIn(!!token);
         setRole(userRole);
         setIsAuthChecked(true); // Mark authentication as checked
-    },  [location.pathname]); // // ✅ Re-run effect when route changes
+    },  [location.pathname]); // Re-run effect when route changes
 
     if (!isAuthChecked) {
         return null; // Prevents rendering incorrect navbar for a split second
@@ -42,12 +42,12 @@ const Navbar = () => {
     // Navigation items based on login status
     const navItems = isLoggedIn
         ? role === "company"
-            ? [{ path: "/company-dashboard", title: "Dashboard" }, { path: "/companies", title: "Companies" }]
+            ? [{ path: "/company-dashboard", title: "Dashboard" }, { path: "/post-job", title: "Post Job" }]
             : [{ path: "/job-aspirant-dashboard", title: "Dashboard" }, { path: "/companies", title: "Companies" }]
         : [ 
-            { path: "/my-job", title: "My Jobs" },
-            { path: "/salary", title: "Estimated Salary" },
-            { path: "/post-job", title: "Post a Job" },
+            { path: "/statistics", title: "Statistics" },
+            { path: "/companies", title: "Companies" },
+            { path: "/about", title: "About Us" },
         ];
 
 
