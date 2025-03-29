@@ -6,6 +6,7 @@ import Login from "../Pages/Login";
 import Signup from "../Pages/Signup";
 import CompanyDashboard from "../Pages/CompanyDashboard";
 import JobAspirantDashboard from "../Pages/JobAspirantDashboard";
+import ProtectedRoute from "../Component/ProtectedRoute";
 
 
 const router = createBrowserRouter([
@@ -17,8 +18,22 @@ const router = createBrowserRouter([
             { path: "/post-job", element: <CreateJob /> },
             { path: "/login", element: <Login /> },
             { path: "/sign-up", element: <Signup /> },
-            { path: "/company-dashboard", element: <CompanyDashboard /> },
-            { path: "/job-aspirant-dashboard", element: <JobAspirantDashboard /> },
+            {
+                path: "/company-dashboard",
+                element: (
+                    <ProtectedRoute allowedRoles={["company"]}>
+                        <CompanyDashboard />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/job-aspirant-dashboard",
+                element: (
+                    <ProtectedRoute allowedRoles={["jobAspirant"]}>
+                        <JobAspirantDashboard />
+                    </ProtectedRoute>
+                ),
+            },
         ]
     },
 ]);
