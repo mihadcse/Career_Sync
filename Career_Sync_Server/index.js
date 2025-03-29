@@ -186,7 +186,28 @@ app.get("/api/statistics", async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-})
+});
+
+// Get all companies
+app.get('/api/company', async (req, res) => {
+    try {
+        // Fetch all companies
+        const companies = await Company.find();
+
+        // Fetch job counts for each company
+        const companiesWithJobCounts = await Promise.all(companies.map(async (company) => {
+            const jobCount = await Job.countDocuments({ companyName: company.name });
+            return { 
+                ...company.toObject(), // Convert Mongoose document to plain object
+                jobCount 
+            };
+        }));
+
+        res.status(200).json(companiesWithJobCounts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

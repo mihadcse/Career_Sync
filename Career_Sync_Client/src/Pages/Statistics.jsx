@@ -10,7 +10,7 @@ const Statistics = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/statistics") // Adjust the API URL
+        fetch("http://localhost:3000/api/statistics") 
             .then((res) => res.json())
             .then((data) => {
                 setStats(data);

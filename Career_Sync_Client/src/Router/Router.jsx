@@ -8,6 +8,7 @@ import CompanyDashboard from "../Pages/CompanyDashboard";
 import JobAspirantDashboard from "../Pages/JobAspirantDashboard";
 import ProtectedRoute from "../Component/ProtectedRoute";
 import Statistics from "../Pages/Statistics";
+import Company from "../Pages/Company";
 
 
 const router = createBrowserRouter([
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
             { path: "/login", element: <Login /> },
             { path: "/sign-up", element: <Signup /> }, 
             { path: "/statistics", element: <Statistics /> },
+            { path: "/companies", element: <Company /> },
             {
                 path: "/company-dashboard",
                 element: (
