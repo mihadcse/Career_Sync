@@ -107,10 +107,6 @@ const Signup = () => {
                   <label className='block mb-1'>Full Name</label>
                   <input type='text' name='name' value={formData.name} onChange={handleInputChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
                 </div>
-                <div>
-                  <label className='block mb-1'>Upload Resume</label>
-                  <input type='file' name='resume' onChange={handleFileChange} className='w-full p-2 rounded bg-black/50 border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500' required />
-                </div>
               </>
             )}
             <div>

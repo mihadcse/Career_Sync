@@ -107,7 +107,7 @@ app.post('/api/register-company', async (req, res) => {
 // Job Aspirant Registration Route
 app.post('/api/register-job-aspirant', async (req, res) => {
     try {
-        const { name, email, password, resume } = req.body;
+        const { name, email, password } = req.body;
 
         // Check if the aspirant already exists
         const existingAspirant = await JobAspirant.findOne({ email });
@@ -122,8 +122,7 @@ app.post('/api/register-job-aspirant', async (req, res) => {
         const newAspirant = new JobAspirant({
             name,
             email,
-            password: hashedPassword,
-            resume
+            password: hashedPassword
         });
 
         // Save to database

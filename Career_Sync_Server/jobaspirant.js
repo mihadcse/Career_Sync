@@ -13,10 +13,6 @@ const JobAspirantSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-    resume: {
-        type: String, // Store the file path or URL
-        required: true
     }
 }, { timestamps: true });
 
