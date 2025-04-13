@@ -9,6 +9,9 @@ import Job from './jobs.js'
 import Company from './company.js';
 import JobAspirant from './jobaspirant.js';
 
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,6 +21,39 @@ dotenv.config()
 //middleware
 app.use(express.json());
 app.use(cors());
+
+// ✅ Ensure uploads directory exists (Added from your template)
+const uploadDir = './uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
+// ✅ File storage configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+const upload = multer({ storage });
+
+// ✅ Serve static files from the uploads folder
+app.use('/uploads', express.static('uploads')); // fixed: ./uploads → /uploads
+
+// ✅ Image upload route (from your original example)
+app.post('/api/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'Please upload an image.' });
+    }
+    res.json({
+        message: 'Image uploaded successfully',
+        file: req.file,
+        url: `http://localhost:${port}/uploads/${req.file.filename}` // respond with the static URL
+    });
+});
 
 mongoose.connect(process.env.MONGODBURL)
     .then(() => console.log("Connected to MongoDB"))
@@ -208,6 +244,70 @@ app.get('/api/company', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+//////////////////////////////
+
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'Missing token' });
+  
+    const token = authHeader.split(' ')[1];
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      res.status(401).json({ error: 'Invalid token' });
+    }
+  };
+
+  //  Route to Get Current Job Aspirant
+  app.get('/api/job-aspirant/me', verifyToken, async (req, res) => {
+    try {
+      const user = await JobAspirant.findById(req.user.id);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+  
+      res.json({
+        name: user.name,
+        profileImage: user.profileImage,
+        cvImage: user.cvImage
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+    
+  //  Route to Update Job Aspirant Profile
+  app.put('/api/job-aspirant/update', verifyToken, upload.fields([
+    { name: 'profileImage' },
+    { name: 'cvImage' }
+  ]), async (req, res) => {
+    try {
+      const user = await JobAspirant.findById(req.user.id);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+  
+      const { name } = req.body;
+      if (name) user.name = name;
+      if (req.files['profileImage']) {
+        user.profileImage = '/' + req.files['profileImage'][0].path;
+      }
+      if (req.files['cvImage']) {
+        user.cvImage = '/' + req.files['cvImage'][0].path;
+      }
+  
+      await user.save();
+      res.json({
+        name: user.name,
+        profileImage: user.profileImage,
+        cvImage: user.cvImage
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  app.use('./uploads', express.static('uploads'));
+  
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

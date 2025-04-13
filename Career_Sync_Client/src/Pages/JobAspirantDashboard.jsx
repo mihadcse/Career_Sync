@@ -1,80 +1,103 @@
+
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const JobAspirantDashboard = () => {
   const [name, setName] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [cvImage, setCvImage] = useState(null);
+  const [profileImage, setProfileImage] = useState('');
+  const [cvImage, setCvImage] = useState('');
+  const [newName, setNewName] = useState('');
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [selectedCV, setSelectedCV] = useState(null);
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const storedName = localStorage.getItem('name');
-    if (storedName) setName(storedName);
-  }, []);
+    const fetchAspirant = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const { name, profileImage, cvImage } = response.data;
+        setName(name);
+        setNewName(name);
+        setProfileImage(profileImage);
+        setCvImage(cvImage);
+      } catch (error) {
+        console.error('Failed to fetch aspirant data:', error);
+      }
+    };
 
-  const handleProfileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
-    }
-  };
+    fetchAspirant();
+  }, [token]);
 
-  const handleCvChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setCvImage(URL.createObjectURL(file));
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', newName);
+    if (selectedProfile) formData.append('profileImage', selectedProfile);
+    if (selectedCV) formData.append('cvImage', selectedCV);
+
+    try {
+      const res = await axios.put('http://localhost:3000/api/job-aspirant/update', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setName(res.data.name);
+      setProfileImage(res.data.profileImage);
+      setCvImage(res.data.cvImage);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Failed to update profile:', error);
     }
   };
 
   return (
-    <div className="pt-20 px-4 md:px-8 bg-black/30 min-h-screen">
-      <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6">
+    <div className="pt-20 px-4 md:px-8 bg-black/30 min-h-screen text-white">
+      <h2 className="text-2xl md:text-3xl font-semibold mb-6">
         Welcome back, <span className="text-primary">{name || 'Aspirant'}</span>!
       </h2>
 
-      {/* Profile Section */}
-      <div className="bg-black/30 p-6 rounded-2xl shadow mb-10">
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">Your Profile</h3>
-        <div className="flex flex-col sm:flex-row gap-6 items-center">
-          <div>
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-primary"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-gray-500">
-                No Image
-              </div>
-            )}
-            <input type="file" onChange={handleProfileChange} accept="image/*" className="mt-2" />
-          </div>
-          <div>
-            <p className="text-gray-700 font-medium">Upload CV Image:</p>
-            <input type="file" onChange={handleCvChange} accept="image/*" className="mt-2" />
-            {cvImage && (
-              <div className="mt-4">
-                <img src={cvImage} alt="CV" className="w-40 h-auto rounded-md border" />
-              </div>
-            )}
-          </div>
+      <form onSubmit={handleUpdate} className="space-y-6 max-w-md">
+        <div>
+          <label className="block mb-1">Name</label>
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            className="w-full p-2 text-black rounded"
+          />
         </div>
-      </div>
 
-
-      {/* Recommended Jobs */}
-      <div>
-        <h3 className="text-2xl font-semibold text-gray-800 mb-4">Recommended Jobs</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div className="bg-black/30 rounded-2xl shadow p-6 hover:shadow-md transition">
-            <h4 className="text-xl font-semibold text-gray-800">Frontend Developer</h4>
-            <p className="text-gray-600 mt-1">Tech Corp</p>
-            <p className="text-sm text-gray-500 mt-1">Remote | Full Time</p>
-            <button className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition">
-              View Details
-            </button>
-          </div>
+        <div>
+          <label className="block mb-1">Profile Image</label>
+          {profileImage && (
+            <img src={`http://localhost:3000${profileImage}`} alt="Profile" className="h-24 mb-2 rounded" />
+          )}
+          <input type="file" onChange={(e) => setSelectedProfile(e.target.files[0])} />
         </div>
-      </div>
+
+        <div>
+          <label className="block mb-1">CV File (Image)</label>
+          {cvImage && (
+            <img src={`http://localhost:3000${cvImage}`} alt="CV" className="h-24 mb-2 rounded" />
+          )}
+          <input type="file" onChange={(e) => setSelectedCV(e.target.files[0])} />
+        </div>
+
+        <button
+          type="submit"
+          className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white"
+        >
+          Update Profile
+        </button>
+      </form>
     </div>
   );
 };
