@@ -9,6 +9,7 @@ const JobAspirantDashboard = () => {
   const [newName, setNewName] = useState('');
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [selectedCV, setSelectedCV] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   const token = localStorage.getItem('token');
 
@@ -53,6 +54,7 @@ const JobAspirantDashboard = () => {
       setProfileImage(res.data.profileImage);
       setCvImage(res.data.cvImage);
       alert('Profile updated successfully!');
+      window.location.reload(); // Reload the page to reflect changes
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
@@ -64,40 +66,59 @@ const JobAspirantDashboard = () => {
         Welcome back, <span className="text-primary">{name || 'Aspirant'}</span>!
       </h2>
 
-      <form onSubmit={handleUpdate} className="space-y-6 max-w-md">
-        <div>
-          <label className="block mb-1">Name</label>
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className="w-full p-2 text-black rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Profile Image</label>
-          {profileImage && (
-            <img src={`http://localhost:3000${profileImage}`} alt="Profile" className="h-24 mb-2 rounded" />
-          )}
-          <input type="file" onChange={(e) => setSelectedProfile(e.target.files[0])} />
-        </div>
-
-        <div>
-          <label className="block mb-1">CV File (Image)</label>
-          {cvImage && (
-            <img src={`http://localhost:3000${cvImage}`} alt="CV" className="h-24 mb-2 rounded" />
-          )}
-          <input type="file" onChange={(e) => setSelectedCV(e.target.files[0])} />
-        </div>
-
+      {/* toggle between update button and form */}
+      {!showForm ? (
         <button
-          type="submit"
+          onClick={() => setShowForm(true)} 
           className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white"
         >
           Update Profile
         </button>
-      </form>
+      ) : (
+        <form onSubmit={handleUpdate} className="space-y-6 max-w-md">
+          <div>
+            <label className="block mb-1">Name</label>
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="w-full p-2 text-black rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1">Profile Image</label>
+            {profileImage && (
+              <img src={`http://localhost:3000${profileImage}`} alt="Profile" className="h-24 mb-2 rounded" />
+            )}
+            <input type="file" onChange={(e) => setSelectedProfile(e.target.files[0])} />
+          </div>
+
+          <div>
+            <label className="block mb-1">CV File (Image)</label>
+            {cvImage && (
+              <img src={`http://localhost:3000${cvImage}`} alt="CV" className="h-24 mb-2 rounded" />
+            )}
+            <input type="file" onChange={(e) => setSelectedCV(e.target.files[0])} />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className="bg-red-500 hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+          >
+            Cancel
+          </button>
+          <br />
+          <br />
+        </form>
+        )}
     </div>
   );
 };
