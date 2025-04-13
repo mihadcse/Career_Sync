@@ -306,7 +306,7 @@ const verifyToken = (req, res, next) => {
       res.status(500).json({ error: error.message });
     }
   });
-  app.use('./uploads', express.static('uploads'));
+  app.use('/uploads', express.static('uploads'));
   
 
 app.listen(port, () => {

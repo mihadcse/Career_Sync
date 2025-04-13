@@ -63,13 +63,22 @@ const JobAspirantDashboard = () => {
   return (
     <div className="pt-20 px-4 md:px-8 bg-black/30 min-h-screen text-white">
       <h2 className="text-2xl md:text-3xl font-semibold mb-6">
-        Welcome back, <span className="text-primary">{name || 'Aspirant'}</span>!
+        Welcome, <span className="text-primary">{name || 'Aspirant'}</span>!
       </h2>
-
+      {/*Show profile image below the greeting */}
+      {profileImage && (
+        <div className="mb-4">
+          <img
+            src={`http://localhost:3000${profileImage}`}
+            alt="Profile"
+            className="h-52 w-42 rounded-full object-cover border-2 border-white"
+          />
+        </div>
+      )}
       {/* toggle between update button and form */}
       {!showForm ? (
         <button
-          onClick={() => setShowForm(true)} 
+          onClick={() => setShowForm(true)}
           className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white"
         >
           Update Profile
@@ -118,7 +127,12 @@ const JobAspirantDashboard = () => {
           <br />
           <br />
         </form>
-        )}
+      )}
+      <br />
+      <br />
+      <div>
+        <h3>Applied Jobs</h3>
+      </div>
     </div>
   );
 };
