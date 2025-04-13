@@ -169,7 +169,7 @@ app.post('/api/login', async (req, res) => {
 
         //console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-        res.status(200).json({ message: "Login successful", token, role });
+        res.status(200).json({ message: "Login successful", token, role, name: user.name });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -182,7 +182,7 @@ app.get("/api/statistics", async (req, res) => {
         const totalCompany = await Company.countDocuments();
         const totalJobs = await Job.countDocuments();
 
-        res.json({ totalJobaspirants, totalCompany, totalJobs});
+        res.json({ totalJobaspirants, totalCompany, totalJobs });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -197,9 +197,9 @@ app.get('/api/company', async (req, res) => {
         // Fetch job counts for each company
         const companiesWithJobCounts = await Promise.all(companies.map(async (company) => {
             const jobCount = await Job.countDocuments({ companyName: company.name });
-            return { 
+            return {
                 ...company.toObject(), // Convert Mongoose document to plain object
-                jobCount 
+                jobCount
             };
         }));
 

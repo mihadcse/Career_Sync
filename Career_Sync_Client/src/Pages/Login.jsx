@@ -28,6 +28,7 @@ const Login = () => {
       // Store token and role in localStorage
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
+      localStorage.setItem('name', data.name); // store the name
 
       // Redirect based on role
       if (data.role === 'company') {

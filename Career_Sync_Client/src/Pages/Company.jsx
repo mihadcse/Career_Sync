@@ -32,7 +32,7 @@ const Company = () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-8">
                     {companies.map((company, index) => (
-                        <div key={index} className="bg-opacity-10 p-6 rounded-lg shadow-xl shadow-cyan-500 text-center text-white">
+                        <div key={index} className="bg-opacity-10 p-6 rounded-lg shadow-xl shadow-cyan-500 text-center text-white border-2 border-cyan-500">
                             <h2 className="text-2xl font-bold">{company.name}</h2>
                             <p className="text-lg text-gray-300">
                                 {company.jobCount !== undefined ? `${company.jobCount} Jobs Offered` : "Job count not available"}

@@ -13,7 +13,9 @@ const JobAspirantSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    profileImage: { type: String, default: "" },
+    cvImage: { type: String, default: "" },  
 }, { timestamps: true });
 
 const JobAspirant = mongoose.model('JobAspirant', JobAspirantSchema);
