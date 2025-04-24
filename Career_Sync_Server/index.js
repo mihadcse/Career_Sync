@@ -333,16 +333,27 @@ app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
     }
 });
 
-// Get jobs matching preferred types
+// Get all matching jobs for the job aspirant
 app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
     try {
         const user = await JobAspirant.findById(req.user.id);
-        const matchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } });
-        res.json(matchingJobs);
+        const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } }).sort({ createdAt: -1 });
+
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - 3); // jobs added in last 3 days = "new"
+
+        const newJobs = allMatchingJobs.filter(job => job.createdAt >= cutoffDate);
+        const oldJobs = allMatchingJobs.filter(job => job.createdAt < cutoffDate);
+
+        res.json({ newJobs, oldJobs });
+        console.log("Preferred job types:", user.preferredJobTypes);
+        // console.log("New Jobs:", newJobs);
+        // console.log("Old Jobs:", oldJobs);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

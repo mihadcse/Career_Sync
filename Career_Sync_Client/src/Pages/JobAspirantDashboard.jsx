@@ -13,8 +13,8 @@ const JobAspirantDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [jobTypes, setJobTypes] = useState([]); // Types of Jobs
   const [selectedJobType, setSelectedJobType] = useState('');
-  const [preferredTypes, setPreferredTypes] = useState([]);
-  const [matchingJobs, setMatchingJobs] = useState([]);
+  const [newJobs, setNewJobs] = useState([]);
+  const [oldJobs, setOldJobs] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -29,7 +29,8 @@ const JobAspirantDashboard = () => {
           const res = await axios.get('http://localhost:3000/api/job-aspirant/matching-jobs', {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setMatchingJobs(res.data);
+          setNewJobs(res.data.newJobs || []);
+          setOldJobs(res.data.oldJobs || []);
         };
         const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
           headers: {
@@ -178,16 +179,34 @@ const JobAspirantDashboard = () => {
       </div>
       <div className="mt-6">
         <h3 className="text-xl mb-4 text-cyan-400 font-semibold">Your Preferred Jobs</h3>
-        <div className="grid gap-1 w-2/4">
-          {matchingJobs.length > 0 ? (
-            matchingJobs.map((job, index) => (
-              <Card key={index} data={job} />
-            ))
-          ) : (
-            <p className="text-white">No matching jobs found yet.</p>
-          )}
+
+        <div className="mb-6">
+          <h4 className="text-lg text-green-400 font-semibold mb-2">Newly Added Jobs</h4>
+          <div className="grid gap-4 w-2/4">
+            {newJobs.length > 0 ? (
+              newJobs.map((job, index) => (
+                <Card key={index} data={job} />
+              ))
+            ) : (
+              <p className="text-white">No new jobs found.</p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-lg text-yellow-300 font-semibold mb-2">Previously Viewed Jobs</h4>
+          <div className="grid gap-4 w-2/4">
+            {oldJobs.length > 0 ? (
+              oldJobs.map((job, index) => (
+                <Card key={index} data={job} />
+              ))
+            ) : (
+              <p className="text-white">No previously viewed jobs found.</p>
+            )}
+          </div>
         </div>
       </div>
+
     </div>
   );
 };
