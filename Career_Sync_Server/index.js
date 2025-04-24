@@ -318,6 +318,21 @@ app.get('/api/job-types', async (req, res) => {
     }
 });
 
+// Add a preferred job type
+app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
+    const { jobType } = req.body;
+    try {
+        const user = await JobAspirant.findById(req.user.id);
+        if (!user.preferredJobTypes.includes(jobType)) {
+            user.preferredJobTypes.push(jobType);
+            await user.save();
+        }
+        res.json(user.preferredJobTypes);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

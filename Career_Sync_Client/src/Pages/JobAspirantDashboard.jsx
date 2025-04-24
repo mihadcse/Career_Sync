@@ -10,12 +10,18 @@ const JobAspirantDashboard = () => {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [selectedCV, setSelectedCV] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [jobTypes, setJobTypes] = useState([]); // Types of Jobs
+  const [selectedJobType, setSelectedJobType] = useState('');
 
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchAspirant = async () => {
       try {
+        const fetchJobTypes = async () => {
+          const res = await axios.get('http://localhost:3000/api/job-types');
+          setJobTypes(res.data);
+        };
         const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -26,6 +32,7 @@ const JobAspirantDashboard = () => {
         setNewName(name);
         setProfileImage(profileImage);
         setCvImage(cvImage);
+        fetchJobTypes();
       } catch (error) {
         console.error('Failed to fetch aspirant data:', error);
       }
@@ -132,6 +139,32 @@ const JobAspirantDashboard = () => {
       <br />
       <div>
         <h3>Applied Jobs</h3>
+      </div>
+      <div>
+        <h3 className="mt-6 mb-2">Select Preferred Job Type</h3>
+        <select
+          value={selectedJobType}
+          onChange={(e) => setSelectedJobType(e.target.value)}
+          className="text-black p-2 rounded"
+        >
+          <option value="">Select a job type</option>
+          {jobTypes.map((type, idx) => (
+            <option key={idx} value={type}>{type}</option>
+          ))}
+        </select>
+        <button
+          onClick={async () => {
+            if (!selectedJobType) return;
+            await axios.post('http://localhost:3000/api/job-aspirant/add-preference',
+              { jobType: selectedJobType },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            alert('Job type added to preferences!');
+          }}
+          className="ml-2 bg-green-500 px-3 py-1 rounded"
+        >
+          Add
+        </button>
       </div>
     </div>
   );
