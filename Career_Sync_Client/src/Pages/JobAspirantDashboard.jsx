@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Card from '../Component/Card';
 
 const JobAspirantDashboard = () => {
   const [name, setName] = useState('');
@@ -12,6 +13,8 @@ const JobAspirantDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [jobTypes, setJobTypes] = useState([]); // Types of Jobs
   const [selectedJobType, setSelectedJobType] = useState('');
+  const [preferredTypes, setPreferredTypes] = useState([]);
+  const [matchingJobs, setMatchingJobs] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -21,6 +24,12 @@ const JobAspirantDashboard = () => {
         const fetchJobTypes = async () => {
           const res = await axios.get('http://localhost:3000/api/job-types');
           setJobTypes(res.data);
+        };
+        const fetchPreferredJobs = async () => {
+          const res = await axios.get('http://localhost:3000/api/job-aspirant/matching-jobs', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setMatchingJobs(res.data);
         };
         const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
           headers: {
@@ -33,6 +42,7 @@ const JobAspirantDashboard = () => {
         setProfileImage(profileImage);
         setCvImage(cvImage);
         fetchJobTypes();
+        fetchPreferredJobs();
       } catch (error) {
         console.error('Failed to fetch aspirant data:', error);
       }
@@ -165,6 +175,18 @@ const JobAspirantDashboard = () => {
         >
           Add
         </button>
+      </div>
+      <div className="mt-6">
+        <h3 className="text-xl mb-4 text-cyan-400 font-semibold">Your Preferred Jobs</h3>
+        <div className="grid gap-1 w-2/4">
+          {matchingJobs.length > 0 ? (
+            matchingJobs.map((job, index) => (
+              <Card key={index} data={job} />
+            ))
+          ) : (
+            <p className="text-white">No matching jobs found yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );

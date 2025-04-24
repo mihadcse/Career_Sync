@@ -12,7 +12,7 @@ const jobSchema = new mongoose.Schema({
   experienceLevel: { type: String, required: true },
   employmentType: { type: String, required: true },
   description: { type: String, required: true },
-});
+}, { timestamps: true });
 
 const Job = mongoose.model("Job", jobSchema);
 
