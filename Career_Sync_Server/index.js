@@ -354,6 +354,45 @@ app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
     }
 });
 
+//  Route to Get Current Company 
+app.get('/api/company/me', verifyToken, async (req, res) => {
+    try {
+        const user = await Company.findById(req.user.id);
+        if (!user) return res.status(404).json({ error: 'Company not found' });
+
+        res.json({
+            name: user.name,
+            logoImage: user.logoImage,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//  Route to Update Company Logo image
+app.put('/api/company/update', verifyToken, upload.fields([
+    { name: 'logoImage' }
+]), async (req, res) => {
+    try {
+        const user = await Company.findById(req.user.id);
+        if (!user) return res.status(404).json({ error: 'Company not found' });
+
+        const { name } = req.body;
+        if (name) user.name = name;
+        if (req.files['logoImage']) {
+            user.logoImage = '/' + req.files['logoImage'][0].path;
+        }
+
+        await user.save();
+        res.json({
+            name: user.name,
+            logoImage: user.logoImage,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+app.use('/uploads', express.static('uploads'));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

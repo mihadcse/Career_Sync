@@ -6,6 +6,7 @@ const companySchema = new mongoose.Schema({
     password: { type: String, required: true },
     location: { type: String, required: true },
     website: { type: String },
+    logoImage: { type: String, default: "" },
 }, { timestamps: true });
 
 const Company = mongoose.model('Company', companySchema);

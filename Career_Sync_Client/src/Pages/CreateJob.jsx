@@ -17,7 +17,7 @@ const CreateJob = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='flex flex-col lg:flex-row items-center justify-between gap-8'>
                         <div className='lg:w-1/2 w-full'>
-
+ 
                         </div>
                     </div> 
                     <input type="submit" />
