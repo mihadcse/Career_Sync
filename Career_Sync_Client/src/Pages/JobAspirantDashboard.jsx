@@ -61,7 +61,7 @@ const JobAspirantDashboard = () => {
   };
 
   return (
-    <div className="pt-20 px-4 md:px-8 bg-black/30 min-h-screen text-white">
+    <div className="pt-20 px-4 md:px-24 bg-black/30 min-h-screen text-white">
       <h2 className="text-2xl md:text-3xl font-semibold mb-6">
         Welcome, <span className="text-primary">{name || 'Aspirant'}</span>!
       </h2>

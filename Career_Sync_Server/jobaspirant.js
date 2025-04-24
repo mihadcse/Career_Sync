@@ -14,6 +14,7 @@ const JobAspirantSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    preferredJobTypes: [{ type: String }],
     profileImage: { type: String, default: "" },
     cvImage: { type: String, default: "" },  
 }, { timestamps: true });

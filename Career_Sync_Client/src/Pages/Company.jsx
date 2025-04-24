@@ -42,6 +42,8 @@ const Company = () => {
                     ))}
                 </div>
             )}
+            <br />
+            <br />
         </div>
     )
 }
