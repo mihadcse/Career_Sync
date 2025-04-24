@@ -333,6 +333,17 @@ app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
     }
 });
 
+// Get jobs matching preferred types
+app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
+    try {
+        const user = await JobAspirant.findById(req.user.id);
+        const matchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } });
+        res.json(matchingJobs);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
