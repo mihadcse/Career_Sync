@@ -454,6 +454,22 @@ app.post('/api/apply-job', async (req, res) => {
     }
 });
 
+// GET applied jobs of a specific job aspirant
+app.get('/api/applied-jobs/:aspirantId', async (req, res) => {
+    const { aspirantId } = req.params;
+
+    try {
+        const applications = await JobApplication.find({ jobAspirant: aspirantId })
+            .populate('job') // populate job details
+            .sort({ applicationDate: -1 }); // optional: newest first
+
+        res.status(200).json(applications);
+    } catch (error) {
+        console.error('Error fetching applied jobs:', error);
+        res.status(500).json({ message: 'Server error while fetching applied jobs' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
 }) 

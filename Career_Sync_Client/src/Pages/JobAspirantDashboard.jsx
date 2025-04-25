@@ -170,9 +170,6 @@ const JobAspirantDashboard = () => {
           )}
           <br />
           <br />
-          <div>
-            <h3>Applied Jobs</h3>
-          </div>
         </div>
         <div>
           <h3 className="mt-2 mb-2">Select Preferred Job Types</h3>
@@ -214,31 +211,38 @@ const JobAspirantDashboard = () => {
           )}
         </div>
       </div>
-      <div>
-        <div className="mb-6">
-          <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
-          <div className="grid gap-4 w-2/4">
-            {newJobs.length > 0 ? (
-              newJobs.map((job, index) => (
-                <Card key={index} data={job} />
-              ))
-            ) : (
-              <p className="text-white">No new jobs found.</p>
-            )}
+      <div className='flex flex-col md:flex-row justify-between items-start'>
+        <div>
+          <div className="mb-6">
+            <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
+            <div className="grid gap-4 w-2/4">
+              {newJobs.length > 0 ? (
+                newJobs.map((job, index) => (
+                  <Card key={index} data={job} />
+                ))
+              ) : (
+                <p className="text-white">No new jobs found.</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-xl text-yellow-300 font-semibold mb-2">Previously Viewed Preferred Jobs</h4>
+            <div className="grid gap-4 w-2/4">
+              {oldJobs.length > 0 ? (
+                oldJobs.map((job, index) => (
+                  <Card key={index} data={job} />
+                ))
+              ) : (
+                <p className="text-white">No previously viewed jobs found.</p>
+              )}
+            </div>
           </div>
         </div>
 
+
         <div>
-          <h4 className="text-xl text-yellow-300 font-semibold mb-2">Previously Viewed Preferred Jobs</h4>
-          <div className="grid gap-4 w-2/4">
-            {oldJobs.length > 0 ? (
-              oldJobs.map((job, index) => (
-                <Card key={index} data={job} />
-              ))
-            ) : (
-              <p className="text-white">No previously viewed jobs found.</p>
-            )}
-          </div>
+          <h3 className='text-xl text-green-400 font-semibold mb-2"'>Applied Jobs</h3>
         </div>
       </div>
 
