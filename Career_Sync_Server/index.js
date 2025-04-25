@@ -111,10 +111,13 @@ app.get('/api/jobs', async (req, res) => {
 
         const jobsWithCompanyData = jobs.map((job) => ({
             ...job.toObject(),
-            companyLogo: job.company?.logoImage || null,
-            companyWebsite: job.company?.website || null,
-            companyDescription: job.company?.description || null,
-        }));
+            company: job.company ? {
+                name: job.company.name,
+                logoImage: job.company.logoImage,
+                website: job.company.website,
+                description: job.company.description,
+            } : null
+        }));        
 
         res.status(200).json(jobsWithCompanyData);
     } catch (error) {
