@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import Job from './jobs.js'
 import Company from './company.js';
 import JobAspirant from './jobaspirant.js';
+import verifyToken from './authMiddleware.js'; 
 
 import multer from 'multer';
 import path from 'path';
@@ -248,19 +249,19 @@ app.get('/api/company', async (req, res) => {
 
 //////////////////////////////
 
-const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ error: 'Missing token' });
+// const verifyToken = (req, res, next) => {
+//     const authHeader = req.headers.authorization;
+//     if (!authHeader) return res.status(401).json({ error: 'Missing token' });
 
-    const token = authHeader.split(' ')[1];
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        res.status(401).json({ error: 'Invalid token' });
-    }
-};
+//     const token = authHeader.split(' ')[1];
+//     try {
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         req.user = decoded;
+//         next();
+//     } catch (error) {
+//         res.status(401).json({ error: 'Invalid token' });
+//     }
+// };
 
 //  Route to Get Current Job Aspirant
 app.get('/api/job-aspirant/me', verifyToken, async (req, res) => {
