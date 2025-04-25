@@ -430,6 +430,38 @@ app.put('/api/company/update', verifyToken, upload.fields([
 
 app.use('/uploads', express.static('uploads'));
 
+app.post('/api/apply-job', async (req, res) => {
+    try {
+        const { jobId, aspirantId } = req.body;
+
+        // Validate that the job and aspirant exist
+        const job = await Job.findById(jobId);
+        const aspirant = await JobAspirant.findById(aspirantId);
+
+        if (!job || !aspirant) {
+            return res.status(404).json({ message: 'Job or Job Aspirant not found' });
+        }
+
+        // Check if the aspirant has already applied for this job
+        const existingApplication = await JobApplication.findOne({ job: jobId, jobAspirant: aspirantId });
+        if (existingApplication) {
+            return res.status(400).json({ message: 'You have already applied for this job' });
+        }
+
+        // Create a new job application
+        const application = new JobApplication({
+            job: jobId,
+            jobAspirant: aspirantId,
+        });
+
+        await application.save();
+        res.status(201).json({ message: 'Application submitted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
