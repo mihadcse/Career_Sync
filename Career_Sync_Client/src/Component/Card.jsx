@@ -3,15 +3,42 @@ import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 const Card = ({ data }) => {
-  const { company, jobLocation, jobTitle, minPrice, maxPrice, salaryType, employmentType, postingDate, description } = data;
+  const { company, jobLocation, jobTitle, minPrice, maxPrice, salaryType, employmentType, postingDate, description, _id } = data;
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
 
+  const handleApply = async () => {
+    try {
+      const jobId = data._id; 
+      const aspirantId = localStorage.getItem('userId');  
+
+      const response = await fetch('http://localhost:3000/api/apply-job', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ jobId, aspirantId }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Job application submitted successfully!');
+      } else {
+        alert('Failed to apply for the job');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error applying for the job');
+    }
+  };
+
+
   // Check login status on component mount
   useEffect(() => {
-    const token = localStorage.getItem('token'); 
-    const userRole = localStorage.getItem('role'); 
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role');
     setIsLoggedIn(!!token); // Set to true if token exists, false if not
     setRole(userRole);
   }, []);
@@ -36,7 +63,7 @@ const Card = ({ data }) => {
       {isLoggedIn && role !== "company" && (
         <div className='mt-4'>
           <button
-            onClick={() => alert(`Applied for the job: ${jobTitle}`)}
+            onClick={handleApply}
             className='w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300'>
             Apply
           </button>

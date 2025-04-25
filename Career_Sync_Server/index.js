@@ -13,6 +13,7 @@ import verifyToken from './authMiddleware.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import JobApplication from './jobApplication.js';
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -223,7 +224,7 @@ app.post('/api/login', async (req, res) => {
 
         //console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-        res.status(200).json({ message: "Login successful", token, role, name: user.name });
+        res.status(200).json({ message: "Login successful", token, role, name: user.name, userId: user._id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -404,17 +405,6 @@ app.put('/api/company/update', verifyToken, upload.fields([
 
         await user.save();
 
-        // if ((name && name !== oldName) || req.files['logoImage']) {
-        //     const updateFields = {};
-        //     if (name && name !== oldName) updateFields.companyName = name;
-        //     if (req.files['logoImage']) updateFields.logoImage = '/' + req.files['logoImage'][0].path;
-
-        //     await Job.updateMany(
-        //         { company: user._id }, // safer to use ObjectId reference
-        //         { $set: updateFields }
-        //     );
-        // }
-
         res.json({
             name: user.name,
             logoImage: user.logoImage,
@@ -430,9 +420,11 @@ app.put('/api/company/update', verifyToken, upload.fields([
 
 app.use('/uploads', express.static('uploads'));
 
+// Apply job 
 app.post('/api/apply-job', async (req, res) => {
     try {
         const { jobId, aspirantId } = req.body;
+        console.log('Received:', { jobId, aspirantId });
 
         // Validate that the job and aspirant exist
         const job = await Job.findById(jobId);

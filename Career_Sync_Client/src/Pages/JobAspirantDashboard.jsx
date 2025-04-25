@@ -201,7 +201,6 @@ const JobAspirantDashboard = () => {
       <div className="mt-6">
         <h3 className="text-2xl mb-4 text-cyan-400 font-semibold">Your Preferred Job Types</h3>
         {/* Showing preferred job types */}
-        {console.log('Preferred job types:', preferredJobTypes)}
         {preferredJobTypes.length > 0 && (
           <div className="mt-6">
             <ul className="list-disc list-inside text-purple-300 text-lg">
