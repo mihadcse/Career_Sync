@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
 const jobSchema = new mongoose.Schema({
-  companyName: { type: String, required: true },
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    required: true
+  },
   jobTitle: { type: String, required: true },
-  companyLogo: { type: String, required: true },
+  // companyLogo: { type: String, required: true },
   minPrice: { type: Number, required: true },
   maxPrice: { type: Number, required: true },
   salaryType: { type: String, enum: ["Yearly", "Monthly"], required: true },

@@ -68,32 +68,32 @@ app.get('/', (req, res) => {
 // Create a new job
 app.post('/api/post-job', verifyToken, async (req, res) => {
     try {
-        //Get the company info from the token 
+        // Get the company info from the token
         const company = await Company.findById(req.user.id);
 
         if (!company) {
             return res.status(401).json({ error: 'Unauthorized. Company not found.' });
         }
-        // Merge request data with companyName and logo
-        const jobData = {
-            ...req.body,
-            companyName: company.name,
-            companyLogo: company.logoImage,
-        };
 
         // Check if a similar job already exists
         const existingJob = await Job.findOne({
-            companyName: jobData.companyName,
-            jobTitle: jobData.jobTitle,
-            jobLocation: jobData.jobLocation,
+            company: company._id,
+            jobTitle: req.body.jobTitle,
+            jobLocation: req.body.jobLocation,
         });
 
         if (existingJob) {
             return res.status(400).json({ error: 'This job has already been posted.' });
         }
-        // Save the new job
-        const newJob = new Job(jobData);
+
+        // Create the job with a reference to the company
+        const newJob = new Job({
+            ...req.body,
+            company: company._id,
+        });
+
         await newJob.save();
+
         res.status(201).json({
             message: 'Job created successfully',
             job: newJob,
@@ -103,35 +103,18 @@ app.post('/api/post-job', verifyToken, async (req, res) => {
     }
 });
 
-// // Get all jobs 
-// app.get('/api/jobs', async (req, res) => {
-//     try {
-//         // Fetch all jobs from MongoDB
-//         const jobs = await Job.find();
-//         res.status(200).json(jobs);  // Send the fetched jobs as a response
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 // GET jobs with company logo and other info
 app.get('/api/jobs', async (req, res) => {
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 }); // Fetch all jobs sorted by creation date
+        const jobs = await Job.find().sort({ createdAt: -1 }).populate('company');
 
-        const jobsWithCompanyData = await Promise.all(
-            jobs.map(async (job) => {
-                // Find company by name
-                const company = await Company.findOne({ name: job.companyName });
-
-                return {
-                    ...job.toObject(),
-                    companyLogo: company?.logoImage || null,
-                    companyWebsite: company?.website || null,
-                    companyDescription: company?.description || null,
-                };
-            })
-        );
+        const jobsWithCompanyData = jobs.map((job) => ({
+            ...job.toObject(),
+            companyLogo: job.company?.logoImage || null,
+            companyWebsite: job.company?.website || null,
+            companyDescription: job.company?.description || null,
+        }));
 
         res.status(200).json(jobsWithCompanyData);
     } catch (error) {
@@ -264,7 +247,7 @@ app.get('/api/company', async (req, res) => {
 
         // Fetch job counts for each company
         const companiesWithJobCounts = await Promise.all(companies.map(async (company) => {
-            const jobCount = await Job.countDocuments({ companyName: company.name });
+            const jobCount = await Job.countDocuments({ company: company._id });
             return {
                 ...company.toObject(), // Convert Mongoose document to plain object
                 jobCount
@@ -279,20 +262,6 @@ app.get('/api/company', async (req, res) => {
 
 
 //////////////////////////////
-
-// const verifyToken = (req, res, next) => {
-//     const authHeader = req.headers.authorization;
-//     if (!authHeader) return res.status(401).json({ error: 'Missing token' });
-
-//     const token = authHeader.split(' ')[1];
-//     try {
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         req.user = decoded;
-//         next();
-//     } catch (error) {
-//         res.status(401).json({ error: 'Invalid token' });
-//     }
-// };
 
 //  Route to Get Current Job Aspirant
 app.get('/api/job-aspirant/me', verifyToken, async (req, res) => {
@@ -369,15 +338,17 @@ app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
 app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
     try {
         const user = await JobAspirant.findById(req.user.id);
-        const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } }).sort({ createdAt: -1 });
+        const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } })
+            .populate('company', 'name logoImage')
+            .sort({ createdAt: -1 });
 
         const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - 3); // jobs added in last 3 days = "new"
+        cutoffDate.setDate(cutoffDate.getDate() - 2); // jobs added in last 2 days = "new"
 
         const newJobs = allMatchingJobs.filter(job => job.createdAt >= cutoffDate);
         const oldJobs = allMatchingJobs.filter(job => job.createdAt < cutoffDate);
 
-        res.json({ newJobs, oldJobs });
+        res.json({ newJobs, oldJobs, allMatchingJobs });
         console.log("Preferred job types:", user.preferredJobTypes);
         // console.log("New Jobs:", newJobs);
         // console.log("Old Jobs:", oldJobs);
@@ -401,29 +372,7 @@ app.get('/api/company/me', verifyToken, async (req, res) => {
     }
 });
 
-//  Route to Update Company Logo image
-// app.put('/api/company/update', verifyToken, upload.fields([
-//     { name: 'logoImage' }
-// ]), async (req, res) => {
-//     try {
-//         const user = await Company.findById(req.user.id);
-//         if (!user) return res.status(404).json({ error: 'Company not found' });
 
-//         const { name } = req.body;
-//         if (name) user.name = name;
-//         if (req.files['logoImage']) {
-//             user.logoImage = '/' + req.files['logoImage'][0].path;
-//         }
-
-//         await user.save();
-//         res.json({
-//             name: user.name,
-//             logoImage: user.logoImage,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 app.put('/api/company/update', verifyToken, upload.fields([
     { name: 'logoImage' }
 ]), async (req, res) => {
@@ -441,13 +390,16 @@ app.put('/api/company/update', verifyToken, upload.fields([
 
         await user.save();
 
-        // 🔁 Update companyName in jobs (if the name was changed)
-        if (name && name !== oldName) {
-            await Job.updateMany(
-                { companyName: oldName },
-                { $set: { companyName: name } }
-            );
-        }
+        // if ((name && name !== oldName) || req.files['logoImage']) {
+        //     const updateFields = {};
+        //     if (name && name !== oldName) updateFields.companyName = name;
+        //     if (req.files['logoImage']) updateFields.logoImage = '/' + req.files['logoImage'][0].path;
+
+        //     await Job.updateMany(
+        //         { company: user._id }, // safer to use ObjectId reference
+        //         { $set: updateFields }
+        //     );
+        // }
 
         res.json({
             name: user.name,

@@ -15,6 +15,7 @@ const JobAspirantDashboard = () => {
   const [selectedJobType, setSelectedJobType] = useState('');
   const [newJobs, setNewJobs] = useState([]);
   const [oldJobs, setOldJobs] = useState([]);
+  const [preferredJobTypes, setPreferredJobTypes] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -37,11 +38,12 @@ const JobAspirantDashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const { name, profileImage, cvImage } = response.data;
+        const { name, profileImage, cvImage, preferredJobTypes } = response.data;
         setName(name);
         setNewName(name);
         setProfileImage(profileImage);
         setCvImage(cvImage);
+        setPreferredJobTypes(preferredJobTypes || []);
         fetchJobTypes();
         fetchPreferredJobs();
       } catch (error) {
@@ -152,7 +154,7 @@ const JobAspirantDashboard = () => {
         <h3>Applied Jobs</h3>
       </div>
       <div>
-        <h3 className="mt-6 mb-2">Select Preferred Job Type</h3>
+        <h3 className="mt-6 mb-2">Select Preferred Job Types</h3>
         <select
           value={selectedJobType}
           onChange={(e) => setSelectedJobType(e.target.value)}
@@ -178,10 +180,22 @@ const JobAspirantDashboard = () => {
         </button>
       </div>
       <div className="mt-6">
-        <h3 className="text-xl mb-4 text-cyan-400 font-semibold">Your Preferred Jobs</h3>
+        <h3 className="text-2xl mb-4 text-cyan-400 font-semibold">Your Preferred Jobs</h3>
+
+        {/* Showing preferred job types  */}
+        {preferredJobTypes.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-xl text-purple-300 font-semibold mb-2">Preferred Job Types</h3>
+            <ul className="list-disc list-inside text-white">
+              {preferredJobTypes.map((type, index) => (
+                <li key={index}>{type}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mb-6">
-          <h4 className="text-lg text-green-400 font-semibold mb-2">Newly Added Jobs</h4>
+          <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
           <div className="grid gap-4 w-2/4">
             {newJobs.length > 0 ? (
               newJobs.map((job, index) => (
@@ -194,7 +208,7 @@ const JobAspirantDashboard = () => {
         </div>
 
         <div>
-          <h4 className="text-lg text-yellow-300 font-semibold mb-2">Previously Viewed Jobs</h4>
+          <h4 className="text-xl text-yellow-300 font-semibold mb-2">Previously Viewed Preferred Jobs</h4>
           <div className="grid gap-4 w-2/4">
             {oldJobs.length > 0 ? (
               oldJobs.map((job, index) => (
