@@ -16,6 +16,8 @@ const JobAspirantDashboard = () => {
   const [newJobs, setNewJobs] = useState([]);
   const [oldJobs, setOldJobs] = useState([]);
   const [preferredJobTypes, setPreferredJobTypes] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [aspirantId, setAspirantId] = useState('');
 
   const token = localStorage.getItem('token');
   // Fetch job types
@@ -44,6 +46,20 @@ const JobAspirantDashboard = () => {
     }
   };
 
+  // Fetch Aplied jobs
+  const fetchAppliedJobs = async (id) => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/applied-jobs', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAppliedJobs(res.data || []);
+      console.log("Fetched Applied Jobs Data:", res.data.appliedJobs);
+    } catch (error) {
+      console.error('Error fetching applied jobs:', error);
+    }
+  };
+
+
   // Fetch aspirant data
   const fetchAspirantData = async () => {
     try {
@@ -53,11 +69,12 @@ const JobAspirantDashboard = () => {
         },
       });
       const { name, profileImage, cvImage } = response.data;
+      setAspirantId(localStorage.getItem('userId'));
       setName(name);
       setNewName(name);
       setProfileImage(profileImage);
       setCvImage(cvImage);
-      setPreferredJobTypes(preferredJobTypes || []);
+      setPreferredJobTypes(response.data.preferredJobTypes || []);
     } catch (error) {
       console.error('Failed to fetch aspirant data:', error);
     }
@@ -71,6 +88,12 @@ const JobAspirantDashboard = () => {
       fetchPreferredJobs();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (aspirantId) {
+      fetchAppliedJobs(aspirantId);
+    }
+  }, [aspirantId]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -191,7 +214,7 @@ const JobAspirantDashboard = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               alert('Job type added to preferences!');
-              window.location.reload(); // Reload the page to reflect changes
+              //window.location.reload(); // Reload the page to reflect changes
             }}
             className="bg-primary m-2 hover:bg-primary-dark px-4 py-2 rounded text-white"
           >
@@ -240,12 +263,21 @@ const JobAspirantDashboard = () => {
           </div>
         </div>
 
-
         <div>
-          <h3 className='text-xl text-green-400 font-semibold mb-2"'>Applied Jobs</h3>
+          <div>
+            <h4 className="text-xl text-pink-400 font-semibold mb-2">Applied Jobs</h4>
+            <div className="grid gap-4 w-2/4">
+              {appliedJobs.length > 0 ? (
+                appliedJobs.map((job, index) => (
+                  <Card key={index} data={job.job} status={job.status} />
+                ))
+              ) : (
+                <p className="text-white">You haven’t applied to any jobs yet.</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
   );
 };

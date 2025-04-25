@@ -342,9 +342,6 @@ app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
 app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
     try {
         const user = await JobAspirant.findById(req.user.id);
-        // const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } })
-        //     .populate('company', 'name logoImage')
-        //     .sort({ createdAt: -1 });
         const preferredTypes = user.preferredJobTypes || [];
 
         const allMatchingJobs = await Job.find({
@@ -454,14 +451,12 @@ app.post('/api/apply-job', async (req, res) => {
     }
 });
 
-// GET applied jobs of a specific job aspirant
-app.get('/api/applied-jobs/:aspirantId', async (req, res) => {
-    const { aspirantId } = req.params;
-
+app.get('/api/applied-jobs', verifyToken, async (req, res) => {
     try {
+        const aspirantId = req.user.id;
         const applications = await JobApplication.find({ jobAspirant: aspirantId })
-            .populate('job') // populate job details
-            .sort({ applicationDate: -1 }); // optional: newest first
+            .populate('job')
+            .sort({ applicationDate: -1 });
 
         res.status(200).json(applications);
     } catch (error) {
@@ -469,6 +464,7 @@ app.get('/api/applied-jobs/:aspirantId', async (req, res) => {
         res.status(500).json({ message: 'Server error while fetching applied jobs' });
     }
 });
+
 
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
