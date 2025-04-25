@@ -3,11 +3,12 @@ import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const Card = ({ data }) => {
+const Card = ({ data, isApplied }) => {
   const { company, jobLocation, jobTitle, minPrice, maxPrice, salaryType, employmentType, postingDate, description, _id } = data;
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
+  const [isJobApplied, setIsJobApplied] = useState(isApplied);
 
   const handleApply = async () => {
     try {
@@ -25,6 +26,7 @@ const Card = ({ data }) => {
 
       const result = await response.json();
       if (response.ok) {
+        setIsJobApplied(true);
         alert('Job application submitted successfully!');
       } else {
         alert('Failed to apply for the job');
@@ -35,6 +37,29 @@ const Card = ({ data }) => {
     }
   };
 
+  const handleRemove = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/remove-applied-job', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ jobId: data._id }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setIsJobApplied(false);
+        alert('Job application removed successfully!');
+      } else {
+        alert(result.message || 'Failed to remove application');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error removing the application');
+    }
+  };
 
   // Check login status on component mount
   useEffect(() => {
@@ -61,7 +86,7 @@ const Card = ({ data }) => {
         </div>
       </Link>
       {/* Render Apply Button Only If Logged In */}
-      {isLoggedIn && role !== "company" && (
+      {/* {isLoggedIn && role !== "company" && (
         <div className='mt-4'>
           <button
             onClick={handleApply}
@@ -69,7 +94,25 @@ const Card = ({ data }) => {
             Apply
           </button>
         </div>
+      )} */}
+      {isLoggedIn && role !== "company" && (
+        <div className='mt-4'>
+          {isJobApplied ? (
+            <button
+              onClick={handleRemove}
+              className='w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300'>
+              Remove
+            </button>
+          ) : (
+            <button
+              onClick={handleApply}
+              className='w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300'>
+              Apply
+            </button>
+          )}
+        </div>
       )}
+
     </section>
   );
 };

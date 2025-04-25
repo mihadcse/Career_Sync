@@ -460,14 +460,35 @@ app.get('/api/applied-jobs', verifyToken, async (req, res) => {
                 populate: {
                     path: 'company',
                     select: 'name logoImage' // Only fetching name and logo
-                  }  
-              })
+                }
+            })
             .sort({ applicationDate: -1 });
 
         res.status(200).json(applications);
     } catch (error) {
         console.error('Error fetching applied jobs:', error);
         res.status(500).json({ message: 'Server error while fetching applied jobs' });
+    }
+});
+
+app.delete('/api/remove-applied-job', verifyToken, async (req, res) => {
+    try {
+        const aspirantId = req.user.id;
+        const { jobId } = req.body;
+
+        const deleted = await JobApplication.findOneAndDelete({
+            jobAspirant: aspirantId,
+            job: jobId,
+        });
+
+        if (!deleted) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        res.status(200).json({ message: 'Application removed successfully' });
+    } catch (error) {
+        console.error('Error removing job application:', error);
+        res.status(500).json({ message: 'Server error while removing job application' });
     }
 });
 

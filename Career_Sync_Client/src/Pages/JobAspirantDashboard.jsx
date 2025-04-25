@@ -237,8 +237,8 @@ const JobAspirantDashboard = () => {
       <div className='flex flex-col md:flex-row justify-between items-start'>
         <div>
           <div className="mb-6">
-            <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
-            <div className="grid gap-4 w-2/4">
+            <h4 className="text-2xl text-green-400 font-semibold mb-2 text-center">Newly Added Preferred Jobs</h4>
+            <div className="grid gap-4 w-11/12">
               {newJobs.length > 0 ? (
                 newJobs.map((job, index) => (
                   <Card key={index} data={job} />
@@ -250,8 +250,8 @@ const JobAspirantDashboard = () => {
           </div>
 
           <div>
-            <h4 className="text-xl text-yellow-300 font-semibold mb-2">Previously Viewed Preferred Jobs</h4>
-            <div className="grid gap-4 w-2/4">
+            <h4 className="text-2xl text-yellow-300 font-semibold mb-2 text-center">Previously Viewed Preferred Jobs</h4>
+            <div className="grid gap-4 w-11/12">
               {oldJobs.length > 0 ? (
                 oldJobs.map((job, index) => (
                   <Card key={index} data={job} />
@@ -265,11 +265,11 @@ const JobAspirantDashboard = () => {
 
         <div>
           <div>
-            <h4 className="text-xl text-pink-400 font-semibold mb-2">Applied Jobs</h4>
-            <div className="grid gap-4 w-2/4">
+            <h4 className="text-2xl text-pink-400 font-semibold text-center">Applied Jobs</h4>
+            <div className="grid gap-4 w-11/12">
               {appliedJobs.length > 0 ? (
                 appliedJobs.map((job, index) => (
-                  <Card key={index} data={job.job} status={job.status} />
+                  <Card key={index} data={job.job} status={job.status} isApplied={true} />
                 ))
               ) : (
                 <p className="text-white">You haven’t applied to any jobs yet.</p>
