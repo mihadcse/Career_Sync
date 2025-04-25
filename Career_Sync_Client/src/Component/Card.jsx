@@ -21,7 +21,7 @@ const Card = ({ data }) => {
               <span className='flex items-center gap-2 text-white'><FiCalendar/> {postingDate} </span>
               <span className='flex items-end gap-2'></span>
           </div>
-          <p className='text-white/90'>{description}</p>
+          <p className='text-white/90 break-words w-80 whitespace-wrap'>{description}</p>
         </div>
       </Link>
     </section>
