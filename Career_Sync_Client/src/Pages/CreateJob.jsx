@@ -28,28 +28,90 @@ const CreateJob = () => {
   };
 
   return (
-    <div className='max-w-screen-2xl mx-auto container xl:px-24 px-4 pt-16 text-white'>
-      <div className='bg-cyan-500 py-10 px-4 lg:px-16 rounded shadow-lg'>
-        <h2 className='text-2xl font-bold mb-6'>Create New Job</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <input type="text" placeholder="Job Title" {...register('jobTitle', { required: true })} className="w-full p-2 text-black rounded" />
-          <input type="text" placeholder="Job Location" {...register('jobLocation', { required: true })} className="w-full p-2 text-black rounded" />
-          <input type="number" placeholder="Min Salary" {...register('minPrice', { required: true })} className="w-full p-2 text-black rounded" />
-          <input type="number" placeholder="Max Salary" {...register('maxPrice', { required: true })} className="w-full p-2 text-black rounded" />
+    <div className='flex items-center justify-center min-h-screen bg-black/30 px-4 pt-16'>
+      <div className='bg-opacity-10 p-8 rounded-lg shadow-xl shadow-cyan-500 w-full max-w-2xl'>
+        <h2 className='text-center text-2xl font-bold mb-6 text-white'>Create New Job</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
 
-          <select {...register('salaryType', { required: true })} className="w-full p-2 text-black rounded">
-            <option value="">Select Salary Type</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
-          </select>
+          <div>
+            <input
+              type="text"
+              placeholder="Job Title"
+              {...register('jobTitle', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
 
-          <input type="date" {...register('postingDate', { required: true })} className="w-full p-2 text-black rounded" />
-          <input type="text" placeholder="Experience Level (e.g., Entry, Mid, Senior)" {...register('experienceLevel', { required: true })} className="w-full p-2 text-black rounded" />
-          <input type="text" placeholder="Employment Type (e.g., Full-time, Part-time)" {...register('employmentType', { required: true })} className="w-full p-2 text-black rounded" />
+          <div>
+            <input
+              type="text"
+              placeholder="Job Location"
+              {...register('jobLocation', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
 
-          <textarea placeholder="Job Description" {...register('description', { required: true })} className="w-full p-2 text-black rounded" rows={5}></textarea>
+          <div className='flex gap-4'>
+            <input
+              type="number"
+              placeholder="Min Salary"
+              {...register('minPrice', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+            <input
+              type="number"
+              placeholder="Max Salary"
+              {...register('maxPrice', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
 
-          <button type="submit" className="bg-black hover:bg-gray-800 px-6 py-2 text-white font-semibold rounded">Post Job</button>
+          <div>
+            <select
+              {...register('salaryType', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            >
+              <option value="">Select Salary Type</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+          </div>
+
+          <div>
+            <input
+              type="date"
+              {...register('postingDate', { required: true })}
+              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+
+          <input
+            type="text"
+            placeholder="Experience Level (e.g., Entry, Mid, Senior)"
+            {...register('experienceLevel', { required: true })}
+            className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+
+          <input
+            type="text"
+            placeholder="Employment Type (e.g., Full-time, Part-time)"
+            {...register('employmentType', { required: true })}
+            className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+
+          <textarea
+            placeholder="Job Description"
+            {...register('description', { required: true })}
+            rows={4}
+            className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          ></textarea>
+
+          <button
+            type="submit"
+            className="w-full bg-cyan-800 border border-cyan-400 text-white font-bold text-xl py-2 rounded hover:bg-cyan-400 transition duration-300"
+          >
+            Post Job
+          </button>
         </form>
       </div>
     </div>

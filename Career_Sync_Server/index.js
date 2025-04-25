@@ -117,29 +117,29 @@ app.post('/api/post-job', verifyToken, async (req, res) => {
 // GET jobs with company logo and other info
 app.get('/api/jobs', async (req, res) => {
     try {
-      const jobs = await Job.find();
-  
-      const jobsWithCompanyData = await Promise.all(
-        jobs.map(async (job) => {
-          // Find company by name or preferably by ID
-          const company = await Company.findOne({ name: job.companyName }); // or { _id: job.companyId }
-  
-          return {
-            ...job.toObject(),
-            companyLogo: company?.logoImage || null,
-            companyWebsite: company?.website || null, // Optional: more fields
-            companyDescription: company?.description || null,
-          };
-        })
-      );
-  
-      res.status(200).json(jobsWithCompanyData);
+        const jobs = await Job.find();
+
+        const jobsWithCompanyData = await Promise.all(
+            jobs.map(async (job) => {
+                // Find company by name
+                const company = await Company.findOne({ name: job.companyName });
+
+                return {
+                    ...job.toObject(),
+                    companyLogo: company?.logoImage || null,
+                    companyWebsite: company?.website || null,
+                    companyDescription: company?.description || null,
+                };
+            })
+        );
+
+        res.status(200).json(jobsWithCompanyData);
     } catch (error) {
-      console.error('Error fetching jobs with company info:', error);
-      res.status(500).json({ error: error.message });
+        console.error('Error fetching jobs with company info:', error);
+        res.status(500).json({ error: error.message });
     }
-  });
-  
+});
+
 
 // Company Registration Route
 app.post('/api/register-company', async (req, res) => {
@@ -402,12 +402,36 @@ app.get('/api/company/me', verifyToken, async (req, res) => {
 });
 
 //  Route to Update Company Logo image
+// app.put('/api/company/update', verifyToken, upload.fields([
+//     { name: 'logoImage' }
+// ]), async (req, res) => {
+//     try {
+//         const user = await Company.findById(req.user.id);
+//         if (!user) return res.status(404).json({ error: 'Company not found' });
+
+//         const { name } = req.body;
+//         if (name) user.name = name;
+//         if (req.files['logoImage']) {
+//             user.logoImage = '/' + req.files['logoImage'][0].path;
+//         }
+
+//         await user.save();
+//         res.json({
+//             name: user.name,
+//             logoImage: user.logoImage,
+//         });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// });
 app.put('/api/company/update', verifyToken, upload.fields([
     { name: 'logoImage' }
 ]), async (req, res) => {
     try {
         const user = await Company.findById(req.user.id);
         if (!user) return res.status(404).json({ error: 'Company not found' });
+
+        const oldName = user.name; // save the old name
 
         const { name } = req.body;
         if (name) user.name = name;
@@ -416,14 +440,28 @@ app.put('/api/company/update', verifyToken, upload.fields([
         }
 
         await user.save();
+
+        // 🔁 Update companyName in jobs (if the name was changed)
+        if (name && name !== oldName) {
+            await Job.updateMany(
+                { companyName: oldName },
+                { $set: { companyName: name } }
+            );
+        }
+
         res.json({
             name: user.name,
             logoImage: user.logoImage,
         });
+        console.log('Old Company Name:', oldName);
+        const jobsWithOldName = await Job.find({ companyName: oldName });
+        console.log('Jobs found:', jobsWithOldName.length);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
+
 app.use('/uploads', express.static('uploads'));
 
 app.listen(port, () => {
