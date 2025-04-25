@@ -117,7 +117,7 @@ app.get('/api/jobs', async (req, res) => {
                 website: job.company.website,
                 description: job.company.description,
             } : null
-        }));        
+        }));
 
         res.status(200).json(jobsWithCompanyData);
     } catch (error) {
@@ -341,7 +341,16 @@ app.post('/api/job-aspirant/add-preference', verifyToken, async (req, res) => {
 app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
     try {
         const user = await JobAspirant.findById(req.user.id);
-        const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } })
+        // const allMatchingJobs = await Job.find({ jobTitle: { $in: user.preferredJobTypes } })
+        //     .populate('company', 'name logoImage')
+        //     .sort({ createdAt: -1 });
+        const preferredTypes = user.preferredJobTypes || [];
+
+        const allMatchingJobs = await Job.find({
+            $or: preferredTypes.map(type => ({
+                jobTitle: { $regex: new RegExp(`^${type}$`, 'i') }  // case-insensitive exact match
+            }))
+        })
             .populate('company', 'name logoImage')
             .sort({ createdAt: -1 });
 
@@ -351,8 +360,10 @@ app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
         const newJobs = allMatchingJobs.filter(job => job.createdAt >= cutoffDate);
         const oldJobs = allMatchingJobs.filter(job => job.createdAt < cutoffDate);
 
-        res.json({ newJobs, oldJobs, allMatchingJobs });
+        res.json({ newJobs, oldJobs, allMatchingJobs, preferredJobTypes: user.preferredJobTypes });
+        //res.json({ newJobs, oldJobs, allMatchingJobs });
         console.log("Preferred job types:", user.preferredJobTypes);
+        console.log("Matched job titles:", allMatchingJobs.map(job => job.jobTitle));
         // console.log("New Jobs:", newJobs);
         // console.log("Old Jobs:", oldJobs);
     } catch (err) {

@@ -18,40 +18,58 @@ const JobAspirantDashboard = () => {
   const [preferredJobTypes, setPreferredJobTypes] = useState([]);
 
   const token = localStorage.getItem('token');
+  // Fetch job types
+  const fetchJobTypes = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/job-types');
+      setJobTypes(res.data);
+    } catch (error) {
+      console.error('Error fetching job types:', error);
+    }
+  };
+
+  // Fetch preferred jobs
+  const fetchPreferredJobs = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/job-aspirant/matching-jobs', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const { preferredJobTypes } = res.data;
+      console.log("Fetched Jobs Data:", res.data);
+      setNewJobs(res.data.newJobs || []);
+      setOldJobs(res.data.oldJobs || []);
+      setPreferredJobTypes(res.data.preferredJobTypes || []);
+    } catch (error) {
+      console.error('Error fetching preferred jobs:', error);
+    }
+  };
+
+  // Fetch aspirant data
+  const fetchAspirantData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const { name, profileImage, cvImage } = response.data;
+      setName(name);
+      setNewName(name);
+      setProfileImage(profileImage);
+      setCvImage(cvImage);
+      setPreferredJobTypes(preferredJobTypes || []);
+    } catch (error) {
+      console.error('Failed to fetch aspirant data:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchAspirant = async () => {
-      try {
-        const fetchJobTypes = async () => {
-          const res = await axios.get('http://localhost:3000/api/job-types');
-          setJobTypes(res.data);
-        };
-        const fetchPreferredJobs = async () => {
-          const res = await axios.get('http://localhost:3000/api/job-aspirant/matching-jobs', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setNewJobs(res.data.newJobs || []);
-          setOldJobs(res.data.oldJobs || []);
-        };
-        const response = await axios.get('http://localhost:3000/api/job-aspirant/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const { name, profileImage, cvImage, preferredJobTypes } = response.data;
-        setName(name);
-        setNewName(name);
-        setProfileImage(profileImage);
-        setCvImage(cvImage);
-        setPreferredJobTypes(preferredJobTypes || []);
-        fetchJobTypes();
-        fetchPreferredJobs();
-      } catch (error) {
-        console.error('Failed to fetch aspirant data:', error);
-      }
-    };
-
-    fetchAspirant();
+    //console.log("useEffect triggered. Token:", token);
+    if (token) {
+      fetchAspirantData();
+      fetchJobTypes();
+      fetchPreferredJobs();
+    }
   }, [token]);
 
   const handleUpdate = async (e) => {
@@ -180,19 +198,20 @@ const JobAspirantDashboard = () => {
         </button>
       </div>
       <div className="mt-6">
-        <h3 className="text-2xl mb-4 text-cyan-400 font-semibold">Your Preferred Jobs</h3>
-
-        {/* Showing preferred job types  */}
+        <h3 className="text-2xl mb-4 text-cyan-400 font-semibold">Your Preferred Job Types</h3>
+        {/* Showing preferred job types */}
+        {console.log('Preferred job types:', preferredJobTypes)}
         {preferredJobTypes.length > 0 && (
           <div className="mt-6">
-            <h3 className="text-xl text-purple-300 font-semibold mb-2">Preferred Job Types</h3>
-            <ul className="list-disc list-inside text-white">
+            <ul className="list-disc list-inside text-purple-300 text-lg">
               {preferredJobTypes.map((type, index) => (
                 <li key={index}>{type}</li>
               ))}
             </ul>
+            <br />
           </div>
         )}
+
 
         <div className="mb-6">
           <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
