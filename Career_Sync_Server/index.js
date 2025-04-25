@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 import Job from './jobs.js'
 import Company from './company.js';
 import JobAspirant from './jobaspirant.js';
-import verifyToken from './authMiddleware.js'; 
+import verifyToken from './authMiddleware.js';
 
 import multer from 'multer';
 import path from 'path';
@@ -66,34 +66,38 @@ app.get('/', (req, res) => {
 })
 
 // Create a new job
-app.post('/api/post-job', async (req, res) => {
+app.post('/api/post-job', verifyToken, async (req, res) => {
     try {
-        const jobData = req.body;
+        //Get the company info from the token 
+        const company = await Company.findById(req.user.id);
 
-        // Check if a job with the same company name, job title, and location already exists
+        if (!company) {
+            return res.status(401).json({ error: 'Unauthorized. Company not found.' });
+        }
+        // Merge request data with companyName and logo
+        const jobData = {
+            ...req.body,
+            companyName: company.name,
+            companyLogo: company.logoImage,
+        };
+
+        // Check if a similar job already exists
         const existingJob = await Job.findOne({
             companyName: jobData.companyName,
             jobTitle: jobData.jobTitle,
             jobLocation: jobData.jobLocation,
-            minPrice: jobData.minPrice,
-            maxPrice: jobData.maxPrice,
-            salaryType: jobData.salaryType,
-            postingDate: jobData.postingDate,
-            experienceLevel: jobData.experienceLevel,
-            employmentType: jobData.employmentType,
         });
 
         if (existingJob) {
-            return res.status(400).json({ error: "This job has already been posted." });
+            return res.status(400).json({ error: 'This job has already been posted.' });
         }
-
-        // Create a new job instance
+        // Save the new job
         const newJob = new Job(jobData);
-
-        // Save to database
         await newJob.save();
-
-        res.status(201).json({ message: "Job created successfully", job: newJob });
+        res.status(201).json({
+            message: 'Job created successfully',
+            job: newJob,
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
