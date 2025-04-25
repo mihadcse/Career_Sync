@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const Card = ({ data }) => {
   const { company, jobLocation, jobTitle, minPrice, maxPrice, salaryType, employmentType, postingDate, description, _id } = data;
@@ -10,8 +11,8 @@ const Card = ({ data }) => {
 
   const handleApply = async () => {
     try {
-      const jobId = data._id; 
-      const aspirantId = localStorage.getItem('userId');  
+      const jobId = data._id;
+      const aspirantId = localStorage.getItem('userId');
 
       const response = await fetch('http://localhost:3000/api/apply-job', {
         method: 'POST',
@@ -56,7 +57,7 @@ const Card = ({ data }) => {
             <span className='flex items-center gap-2 text-white'><span>৳</span>{maxPrice} - {minPrice} </span>
             <span className='flex items-center gap-2 text-white'><FiCalendar /> {new Date(postingDate).toLocaleDateString()} </span>
           </div>
-          <p className='text-white/90 break-words w-80 whitespace-wrap'>{description}</p>
+          <p className='text-white/90 break-words w-72 whitespace-wrap'>{description}</p>
         </div>
       </Link>
       {/* Render Apply Button Only If Logged In */}
@@ -73,6 +74,23 @@ const Card = ({ data }) => {
   );
 };
 
+Card.propTypes = {
+  data: PropTypes.shape({
+    company: PropTypes.shape({
+      name: PropTypes.string,
+      logoImage: PropTypes.string,
+    }),
+    jobLocation: PropTypes.string,
+    jobTitle: PropTypes.string,
+    minPrice: PropTypes.number,
+    maxPrice: PropTypes.number,
+    salaryType: PropTypes.string,
+    employmentType: PropTypes.string,
+    postingDate: PropTypes.string,
+    description: PropTypes.string,
+    _id: PropTypes.string,
+  }).isRequired,
+};
 
 export default Card;
 

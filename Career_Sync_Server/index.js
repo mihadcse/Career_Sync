@@ -455,5 +455,5 @@ app.post('/api/apply-job', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+    console.log(`CareerSync app backend listening on port ${port}`)
+}) 

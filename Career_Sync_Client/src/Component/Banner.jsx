@@ -1,5 +1,6 @@
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FiMapPin, FiSearch } from 'react-icons/fi';
 
 const Banner = ({ query, handleInputChange }) => {
@@ -47,6 +48,10 @@ const Banner = ({ query, handleInputChange }) => {
             </div>
         </div>
     );
+};
+Banner.propTypes = {
+    query: PropTypes.string.isRequired,
+    handleInputChange: PropTypes.func.isRequired,
 };
 
 export default Banner;
