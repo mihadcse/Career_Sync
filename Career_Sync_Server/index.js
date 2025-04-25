@@ -117,7 +117,7 @@ app.post('/api/post-job', verifyToken, async (req, res) => {
 // GET jobs with company logo and other info
 app.get('/api/jobs', async (req, res) => {
     try {
-        const jobs = await Job.find();
+        const jobs = await Job.find().sort({ createdAt: -1 }); // Fetch all jobs sorted by creation date
 
         const jobsWithCompanyData = await Promise.all(
             jobs.map(async (job) => {
