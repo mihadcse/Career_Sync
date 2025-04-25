@@ -100,119 +100,121 @@ const JobAspirantDashboard = () => {
 
   return (
     <div className="pt-20 px-4 md:px-24 bg-black/30 min-h-screen text-white">
-      <h2 className="text-2xl md:text-3xl font-semibold mb-6">
-        Welcome, <span className="text-primary">{name || 'Aspirant'}</span>!
-      </h2>
-      {/*Show profile image below the greeting */}
-      {profileImage && (
-        <div className="mb-4">
-          <img
-            src={`http://localhost:3000${profileImage}`}
-            alt="Profile"
-            className="h-52 w-42 rounded-full object-cover border-2 border-white"
-          />
+      <div className='flex flex-col md:flex-row justify-between items-start'>
+        <div>
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+            Welcome, <span className="text-primary">{name || 'Aspirant'}</span>!
+          </h2>
+          {/*Show profile image below the greeting */}
+          {profileImage && (
+            <div className="mb-4">
+              <img
+                src={`http://localhost:3000${profileImage}`}
+                alt="Profile"
+                className="h-52 w-42 rounded-full object-cover border-2 border-white"
+              />
+            </div>
+          )}
+          {/* toggle between update button and form */}
+          {!showForm ? (
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white"
+            >
+              Update Profile
+            </button>
+          ) : (
+            <form onSubmit={handleUpdate} className="space-y-6 max-w-md">
+              <div>
+                <label className="block mb-1">Name</label>
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="w-full p-2 text-black rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Profile Image</label>
+                {profileImage && (
+                  <img src={`http://localhost:3000${profileImage}`} alt="Profile" className="h-24 mb-2 rounded" />
+                )}
+                <input type="file" onChange={(e) => setSelectedProfile(e.target.files[0])} />
+              </div>
+
+              <div>
+                <label className="block mb-1">CV File (Image)</label>
+                {cvImage && (
+                  <img src={`http://localhost:3000${cvImage}`} alt="CV" className="h-24 mb-2 rounded" />
+                )}
+                <input type="file" onChange={(e) => setSelectedCV(e.target.files[0])} />
+              </div>
+
+              <button
+                type="submit"
+                className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="bg-red-500 hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+              >
+                Cancel
+              </button>
+              <br />
+              <br />
+            </form>
+          )}
+          <br />
+          <br />
+          <div>
+            <h3>Applied Jobs</h3>
+          </div>
         </div>
-      )}
-      {/* toggle between update button and form */}
-      {!showForm ? (
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white"
-        >
-          Update Profile
-        </button>
-      ) : (
-        <form onSubmit={handleUpdate} className="space-y-6 max-w-md">
-          <div>
-            <label className="block mb-1">Name</label>
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="w-full p-2 text-black rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">Profile Image</label>
-            {profileImage && (
-              <img src={`http://localhost:3000${profileImage}`} alt="Profile" className="h-24 mb-2 rounded" />
-            )}
-            <input type="file" onChange={(e) => setSelectedProfile(e.target.files[0])} />
-          </div>
-
-          <div>
-            <label className="block mb-1">CV File (Image)</label>
-            {cvImage && (
-              <img src={`http://localhost:3000${cvImage}`} alt="CV" className="h-24 mb-2 rounded" />
-            )}
-            <input type="file" onChange={(e) => setSelectedCV(e.target.files[0])} />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-primary hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+        <div>
+          <h3 className="mt-2 mb-2">Select Preferred Job Types</h3>
+          <select
+            value={selectedJobType}
+            onChange={(e) => setSelectedJobType(e.target.value)}
+            className="text-black p-2 rounded"
           >
-            Save Changes
-          </button>
+            <option value="">Select a job type</option>
+            {jobTypes.map((type, idx) => (
+              <option key={idx} value={type}>{type}</option>
+            ))}
+          </select>
           <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className="bg-red-500 hover:bg-primary-dark px-4 py-2 rounded text-white m-2"
+            onClick={async () => {
+              if (!selectedJobType) return;
+              await axios.post('http://localhost:3000/api/job-aspirant/add-preference',
+                { jobType: selectedJobType },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              alert('Job type added to preferences!');
+              window.location.reload(); // Reload the page to reflect changes
+            }}
+            className="bg-primary m-2 hover:bg-primary-dark px-4 py-2 rounded text-white"
           >
-            Cancel
+            Add
           </button>
-          <br />
-          <br />
-        </form>
-      )}
-      <br />
-      <br />
-      <div>
-        <h3>Applied Jobs</h3>
+          <h3 className="text-xl m-4 text-cyan-400 font-semibold">Your Preferred Job Types</h3>
+          {/* Showing preferred job types */}
+          {preferredJobTypes.length > 0 && (
+            <div className="mt-1 ml-10">
+              <ul className="list-disc list-inside text-purple-300 text-lg">
+                {preferredJobTypes.map((type, index) => (
+                  <li key={index}>{type}</li>
+                ))}
+              </ul>
+              <br />
+            </div>
+          )}
+        </div>
       </div>
       <div>
-        <h3 className="mt-6 mb-2">Select Preferred Job Types</h3>
-        <select
-          value={selectedJobType}
-          onChange={(e) => setSelectedJobType(e.target.value)}
-          className="text-black p-2 rounded"
-        >
-          <option value="">Select a job type</option>
-          {jobTypes.map((type, idx) => (
-            <option key={idx} value={type}>{type}</option>
-          ))}
-        </select>
-        <button
-          onClick={async () => {
-            if (!selectedJobType) return;
-            await axios.post('http://localhost:3000/api/job-aspirant/add-preference',
-              { jobType: selectedJobType },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            alert('Job type added to preferences!');
-            window.location.reload(); // Reload the page to reflect changes
-          }}
-          className="ml-2 bg-green-500 px-3 py-1 rounded"
-        >
-          Add
-        </button>
-      </div>
-      <div className="mt-6">
-        <h3 className="text-2xl mb-4 text-cyan-400 font-semibold">Your Preferred Job Types</h3>
-        {/* Showing preferred job types */}
-        {preferredJobTypes.length > 0 && (
-          <div className="mt-6">
-            <ul className="list-disc list-inside text-purple-300 text-lg">
-              {preferredJobTypes.map((type, index) => (
-                <li key={index}>{type}</li>
-              ))}
-            </ul>
-            <br />
-          </div>
-        )}
-
-
         <div className="mb-6">
           <h4 className="text-xl text-green-400 font-semibold mb-2">Newly Added Preferred Jobs</h4>
           <div className="grid gap-4 w-2/4">
