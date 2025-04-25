@@ -53,7 +53,7 @@ const JobAspirantDashboard = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAppliedJobs(res.data || []);
-      console.log("Fetched Applied Jobs Data:", res.data.appliedJobs);
+      console.log("Fetched Applied Jobs Data:", res.data);
     } catch (error) {
       console.error('Error fetching applied jobs:', error);
     }

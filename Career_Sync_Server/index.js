@@ -455,7 +455,13 @@ app.get('/api/applied-jobs', verifyToken, async (req, res) => {
     try {
         const aspirantId = req.user.id;
         const applications = await JobApplication.find({ jobAspirant: aspirantId })
-            .populate('job')
+            .populate({
+                path: 'job',
+                populate: {
+                    path: 'company',
+                    select: 'name logoImage' // Only fetching name and logo
+                  }  
+              })
             .sort({ applicationDate: -1 });
 
         res.status(200).json(applications);
