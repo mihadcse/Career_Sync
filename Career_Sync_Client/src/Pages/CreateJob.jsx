@@ -43,12 +43,23 @@ const CreateJob = () => {
           </div>
 
           <div>
-            <input
-              type="text"
-              placeholder="Job Location"
+            <label className='block mb-1'>Location</label>
+            <select
+              name='location'  
               {...register('jobLocation', { required: true })}
-              className="w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
+              className='w-full p-2 rounded bg-black/50 text-white border border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500'
+              required
+            >
+              <option value='' disabled>Select a location</option>
+              <option value='Dhaka'>Dhaka</option>
+              <option value='Chattogram'>Chattogram</option>
+              <option value='Sylhet'>Sylhet</option>
+              <option value='Mymensingh'>Mymensingh</option>
+              <option value='Rangpur'>Rangpur</option>
+              <option value='Barishal'>Barishal</option>
+              <option value='Khulna'>Khulna</option>
+              <option value='Rajshahi'>Rajshahi</option>
+            </select>
           </div>
 
           <div className='flex gap-4'>
