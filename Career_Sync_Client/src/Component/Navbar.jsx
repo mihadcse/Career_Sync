@@ -7,7 +7,7 @@ import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(null); 
     const [role, setRole] = useState(null);
     // to track when localStorage has been checked
     const [isAuthChecked, setIsAuthChecked] = useState(false);

@@ -191,6 +191,7 @@ const JobAspirantDashboard = () => {
               { headers: { Authorization: `Bearer ${token}` } }
             );
             alert('Job type added to preferences!');
+            window.location.reload(); // Reload the page to reflect changes
           }}
           className="ml-2 bg-green-500 px-3 py-1 rounded"
         >
