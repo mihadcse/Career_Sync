@@ -501,7 +501,7 @@ app.get('/api/company/jobs', verifyToken, async (req, res) => {
     
         const jobs = await Job.find({ company: companyId }).sort({ createdAt: -1 }); // latest first
     
-        res.status(200).json(jobs);
+        res.status(200).json({ createdJobs: jobs });
       } catch (error) {
         console.error("Failed to fetch company jobs:", error);
         res.status(500).json({ message: "Failed to fetch company jobs" });

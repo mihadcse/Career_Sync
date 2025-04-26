@@ -1,75 +1,83 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import Card from '../Component/Card';
 
 const CompanyDashboard = () => {
-    const [name, setName] = useState('');
-    const [logoImage, setLogoImage] = useState('');
-    const [newName, setNewName] = useState('');
-    const [showForm, setShowForm] = useState(false);
-    const [selectedProfile, setSelectedProfile] = useState(null);
-    const [createdJobs, setCreatedJobs] = useState([]);
-  
-    const token = localStorage.getItem('token');
+  const [name, setName] = useState('');
+  const [logoImage, setLogoImage] = useState('');
+  const [newName, setNewName] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [createdJobs, setCreatedJobs] = useState([]);
+  const [companyId, setCompanyId] = useState('');
 
-    // Fetch Crearted jobs
-      const fetchCreatedJobs = async () => {
-        try {
-          const res = await axios.get('http://localhost:3000/api/company/jobs', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const { createdJobs } = res.data;
-          console.log("Fetched Jobs Data:", res.data);
-          setCreatedJobs(res.data.createdJobs || []);
-        } catch (error) {
-          console.error('Error fetching preferred jobs:', error);
-        }
-      };
-  
-    useEffect(() => {
-      const fetchCompany = async () => {
-        try {
-          const response = await axios.get('http://localhost:3000/api/company/me', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const { name, logoImage } = response.data;
-          setName(name);
-          setNewName(name);
-          setLogoImage(logoImage);
-          fetchCreatedJobs(); // Fetch created jobs after fetching company data
+  const token = localStorage.getItem('token');
 
-        } catch (error) {
-          console.error('Failed to fetch aspirant data:', error);
-        }
-      };
-  
-      fetchCompany();
-    }, [token]);
-  
-    const handleUpdate = async (e) => {
-      e.preventDefault();
-  
-      const formData = new FormData();
-      formData.append('name', newName);
-      if (selectedProfile) formData.append('logoImage', selectedProfile);
-  
+  // Fetch Crearted jobs
+  const fetchCreatedJobs = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/company/jobs', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const { createdJobs } = res.data;
+      console.log("Fetched Jobs Data:", res.data);
+      setCreatedJobs(res.data.createdJobs || []);
+    } catch (error) {
+      console.error('Error fetching preferred jobs:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCompany = async () => {
       try {
-        const res = await axios.put('http://localhost:3000/api/company/update', formData, {
+        const response = await axios.get('http://localhost:3000/api/company/me', {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
           },
         });
-  
-        setName(res.data.name);
-        setLogoImage(res.data.logoImage);
-        alert('Profile updated successfully!');
-        //window.location.reload(); // Reload the page to reflect changes
+        const { name, logoImage } = response.data;
+        setName(name);
+        setNewName(name);
+        setLogoImage(logoImage);
+        setCompanyId(localStorage.getItem('userId'));
       } catch (error) {
-        console.error('Failed to update profile:', error);
+        console.error('Failed to fetch aspirant data:', error);
       }
     };
+
+    fetchCompany();
+    //fetchCreatedJobs();
+  }, [token]);
+
+  useEffect(() => {
+    if (companyId) {
+      fetchCreatedJobs();
+    }
+  }, [companyId]);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', newName);
+    if (selectedProfile) formData.append('logoImage', selectedProfile);
+
+    try {
+      const res = await axios.put('http://localhost:3000/api/company/update', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setName(res.data.name);
+      setLogoImage(res.data.logoImage);
+      alert('Profile updated successfully!');
+      //window.location.reload(); // Reload the page to reflect changes
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
 
 
   return (
@@ -134,6 +142,21 @@ const CompanyDashboard = () => {
       )}
       <br />
       <br />
+      <div>
+        <h3 className="text-xl m-4 text-cyan-400 font-semibold">Created Jobs</h3>
+        {/* Showing preferred job types */}
+        {createdJobs.length > 0 && (
+          <div className="grid gap-4 w-11/12">
+            {createdJobs.length > 0 ? (
+              createdJobs.map((job, index) => (
+                <Card key={index} data={job} />
+              ))
+            ) : (
+              <p className="text-white">You haven’t applied to any jobs yet.</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
