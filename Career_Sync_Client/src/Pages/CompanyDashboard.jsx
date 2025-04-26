@@ -7,8 +7,23 @@ const CompanyDashboard = () => {
     const [newName, setNewName] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [selectedProfile, setSelectedProfile] = useState(null);
+    const [createdJobs, setCreatedJobs] = useState([]);
   
     const token = localStorage.getItem('token');
+
+    // Fetch Crearted jobs
+      const fetchCreatedJobs = async () => {
+        try {
+          const res = await axios.get('http://localhost:3000/api/company/jobs', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const { createdJobs } = res.data;
+          console.log("Fetched Jobs Data:", res.data);
+          setCreatedJobs(res.data.createdJobs || []);
+        } catch (error) {
+          console.error('Error fetching preferred jobs:', error);
+        }
+      };
   
     useEffect(() => {
       const fetchCompany = async () => {
@@ -22,6 +37,7 @@ const CompanyDashboard = () => {
           setName(name);
           setNewName(name);
           setLogoImage(logoImage);
+          fetchCreatedJobs(); // Fetch created jobs after fetching company data
 
         } catch (error) {
           console.error('Failed to fetch aspirant data:', error);
@@ -49,7 +65,7 @@ const CompanyDashboard = () => {
         setName(res.data.name);
         setLogoImage(res.data.logoImage);
         alert('Profile updated successfully!');
-        window.location.reload(); // Reload the page to reflect changes
+        //window.location.reload(); // Reload the page to reflect changes
       } catch (error) {
         console.error('Failed to update profile:', error);
       }

@@ -451,6 +451,7 @@ app.post('/api/apply-job', async (req, res) => {
     }
 });
 
+// Get all applied jobs for the job aspirant
 app.get('/api/applied-jobs', verifyToken, async (req, res) => {
     try {
         const aspirantId = req.user.id;
@@ -471,6 +472,7 @@ app.get('/api/applied-jobs', verifyToken, async (req, res) => {
     }
 });
 
+// Remove applied job
 app.delete('/api/remove-applied-job', verifyToken, async (req, res) => {
     try {
         const aspirantId = req.user.id;
@@ -492,6 +494,19 @@ app.delete('/api/remove-applied-job', verifyToken, async (req, res) => {
     }
 });
 
+// get all created jobs by company
+app.get('/api/company/jobs', verifyToken, async (req, res) => {
+    try {
+        const companyId = req.user.id; 
+    
+        const jobs = await Job.find({ company: companyId }).sort({ createdAt: -1 }); // latest first
+    
+        res.status(200).json(jobs);
+      } catch (error) {
+        console.error("Failed to fetch company jobs:", error);
+        res.status(500).json({ message: "Failed to fetch company jobs" });
+      }
+})
 
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
