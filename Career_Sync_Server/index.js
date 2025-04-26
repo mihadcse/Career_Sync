@@ -499,7 +499,9 @@ app.get('/api/company/jobs', verifyToken, async (req, res) => {
     try {
         const companyId = req.user.id; 
     
-        const jobs = await Job.find({ company: companyId }).sort({ createdAt: -1 }); // latest first
+        const jobs = await Job.find({ company: companyId })
+        .populate('company', 'name logoImage') // Populate company name and logo
+        .sort({ createdAt: -1 }); // latest first
     
         res.status(200).json({ createdJobs: jobs });
       } catch (error) {
