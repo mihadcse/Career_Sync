@@ -510,6 +510,36 @@ app.get('/api/company/jobs', verifyToken, async (req, res) => {
       }
 })
 
+// Updating a specific job
+app.put('/api/company/update-job/:id', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+    
+        const updatedFields = {
+          jobTitle: req.body.jobTitle,
+          minPrice: req.body.minPrice,
+          maxPrice: req.body.maxPrice,
+          salaryType: req.body.salaryType,
+          jobLocation: req.body.jobLocation,
+          postingDate: req.body.postingDate,
+          experienceLevel: req.body.experienceLevel,
+          employmentType: req.body.employmentType,
+          description: req.body.description,
+        };
+    
+        const updatedJob = await Job.findByIdAndUpdate(id, updatedFields, { new: true });
+    
+        if (!updatedJob) {
+          return res.status(404).json({ message: "Job not found" });
+        }
+    
+        res.status(200).json(updatedJob);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+      }
+})
+
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
 }) 
