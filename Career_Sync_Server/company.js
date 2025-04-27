@@ -7,6 +7,7 @@ const companySchema = new mongoose.Schema({
     location: { type: String, required: true },
     website: { type: String },
     logoImage: { type: String, default: "" },
+    isApproved: { type: Boolean, default: false }, // Indicates if the company is approved by the admin
 }, { timestamps: true });
 
 const Company = mongoose.model('Company', companySchema);

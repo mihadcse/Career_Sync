@@ -148,7 +148,8 @@ app.post('/api/register-company', async (req, res) => {
             email,
             password: hashedPassword,
             location,
-            website
+            website,
+            isApproved: false, // Default to false until admin approval
         });
 
         // Save to database
@@ -234,7 +235,7 @@ app.post('/api/login', async (req, res) => {
 app.get("/api/statistics", async (req, res) => {
     try {
         const totalJobaspirants = await JobAspirant.countDocuments();
-        const totalCompany = await Company.countDocuments();
+        const totalCompany = await Company.countDocuments({ isApproved: true }); // Only count approved companies
         const totalJobs = await Job.countDocuments();
 
         res.json({ totalJobaspirants, totalCompany, totalJobs });
@@ -246,8 +247,8 @@ app.get("/api/statistics", async (req, res) => {
 // Get all companies
 app.get('/api/company', async (req, res) => {
     try {
-        // Fetch all companies
-        const companies = await Company.find();
+        // Fetch all approved companies
+        const companies = await Company.find({ isApproved: true });
 
         // Fetch job counts for each company
         const companiesWithJobCounts = await Promise.all(companies.map(async (company) => {
@@ -593,6 +594,28 @@ app.get('/api/company/job-applications/:jobId', verifyToken, async (req, res) =>
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+// Approve a company
+app.put('/api/approve-company/:id', async (req, res) => {
+    try {
+        const companyId = req.params.id;
+
+        // Check if the company exists
+        const company = await Company.findById(companyId);
+        if (!company) {
+            return res.status(404).json({ error: "Company not found." });
+        }
+
+        // Update the approval status
+        company.isApproved = true;
+        await company.save();
+
+        res.status(200).json({ message: "Company approved successfully", company });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
