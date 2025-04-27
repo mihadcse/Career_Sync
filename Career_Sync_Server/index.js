@@ -541,7 +541,7 @@ app.put('/api/company/update-job/:id', verifyToken, async (req, res) => {
 })
 
 // Deleting a specific job
-app.delete('/api/company/delete-job/:id', verifyToken, async (req, res) => {
+app.delete('/api/company/delete-job/:jobId', verifyToken, async (req, res) => {
     try {
         const { jobId } = req.params;
     

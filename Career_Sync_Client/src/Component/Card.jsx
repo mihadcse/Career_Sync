@@ -22,7 +22,6 @@ const Card = ({ data, isApplied }) => {
     description: description,
   });
 
-
   const location = useLocation();
 
   const handleApply = async () => {
@@ -92,7 +91,7 @@ const Card = ({ data, isApplied }) => {
       if (response.ok) {
         alert('Job updated successfully!');
         setShowUpdateForm(false); // Hide the form
-        //window.location.reload(); 
+        window.location.reload(); 
       } else {
         alert(result.message || 'Failed to update job');
       }
@@ -102,7 +101,29 @@ const Card = ({ data, isApplied }) => {
     }
   }
 
-
+  const handleDeleteJob = async () => {
+    try {
+      const jobId = data._id;
+      const response = await fetch(`http://localhost:3000/api/company/delete-job/${jobId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      const result = await response.json();
+      if (response.ok) {
+        alert('Job deleted successfully!');
+        window.location.reload(); // Reload the page to reflect changes
+      } else {
+        alert(result.message || 'Failed to delete job');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting the job');
+    }
+  };
+  
   // Check login status on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -145,7 +166,7 @@ const Card = ({ data, isApplied }) => {
             Applications
           </button>
           <button
-            // onClick={handleDelete}
+            onClick={handleDeleteJob}
             className="w-1/2 py-2 bg-red-600 text-white rounded-md hover:bg-red-900  transition duration-300"
           >
             Delete
