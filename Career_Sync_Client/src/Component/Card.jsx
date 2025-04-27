@@ -17,10 +17,11 @@ const Card = ({ data, isApplied }) => {
     salaryType: salaryType,
     jobLocation: jobLocation,
     postingDate: postingDate,
-    experienceLevel: "", // you can modify this
+    experienceLevel: "",
     employmentType: employmentType,
     description: description,
   });
+  const [appliedJobs, setAppliedJobs] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -127,13 +128,43 @@ const Card = ({ data, isApplied }) => {
     }
   };
 
-  // Check login status on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('role');
-    setIsLoggedIn(!!token); // Set to true if token exists, false if not
+    setIsLoggedIn(!!token);
     setRole(userRole);
-  }, []);
+
+    const fetchAppliedJobs = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/applied-jobs', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // Handle non-JSON responses
+        const contentType = response.headers.get('content-type');
+        const result = contentType?.includes('application/json')
+          ? await response.json()
+          : null;
+
+        if (response.ok) {
+          setAppliedJobs(result || []);
+        } else if (response.status === 401) {
+          localStorage.clear();
+          navigate('/login');
+        } else {
+          console.error('Fetch error:', result);
+        }
+      } catch (err) {
+        console.error('Network error:', err);
+      }
+    };
+
+    if (token) {
+      fetchAppliedJobs();
+    }
+  }, [navigate]); // Add token to dependencies
+
+
 
   return (
     <section className='card border border-cyan-300 p-4 rounded-lg shadow-lg hover:border-cyan-400 hover:shadow-md hover:shadow-cyan-500 hover:bg-gray-800 transition duration-300'>
@@ -151,7 +182,7 @@ const Card = ({ data, isApplied }) => {
           <p className='text-white/90 break-words w-72 whitespace-wrap'>{description}</p>
         </div>
       </Link>
-      {/* Show Apply Button Only If Logged In as a job aspirant. Show Update and Delete button when as Company */}
+      {/* Show Apply Button Only If Logged In as a job aspirant and not applied for the job. Show Update and Delete button when as Company */}
       {isLoggedIn && role === "company" && location.pathname === "/company-dashboard" ? (
         // Company buttons
         <div className="mt-4 flex gap-2">
@@ -185,9 +216,28 @@ const Card = ({ data, isApplied }) => {
         </div>
       ) : (
         // Normal user buttons
+        // isLoggedIn && role !== "company" && location.pathname !== "/company-dashboard" && (
+        //   <div className="mt-4">
+        //     {isJobApplied ? (
+        //       <button
+        //         onClick={handleRemove}
+        //         className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+        //       >
+        //         Remove
+        //       </button>
+        //     ) : (
+        //       <button
+        //         onClick={handleApply}
+        //         className="w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300"
+        //       >
+        //         Apply
+        //       </button>
+        //     )}
+        //   </div>
+        // )
         isLoggedIn && role !== "company" && location.pathname !== "/company-dashboard" && (
           <div className="mt-4">
-            {isJobApplied ? (
+            {appliedJobs.some((appliedJob) => appliedJob.job._id === data._id) ? (
               <button
                 onClick={handleRemove}
                 className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"

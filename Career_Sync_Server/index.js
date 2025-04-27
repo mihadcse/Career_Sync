@@ -344,10 +344,15 @@ app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
         const user = await JobAspirant.findById(req.user.id);
         const preferredTypes = user.preferredJobTypes || [];
 
+        // Find IDs of jobs already applied by this user
+        const appliedApplications = await JobApplication.find({ jobAspirant: req.user.id }).select('job');
+        const appliedJobIds = appliedApplications.map(app => app.job.toString());
+
         const allMatchingJobs = await Job.find({
             $or: preferredTypes.map(type => ({
                 jobTitle: { $regex: new RegExp(`^${type}$`, 'i') }  // case-insensitive exact match
-            }))
+            })),
+            _id: { $nin: appliedJobIds } // Exclude already applied jobs
         })
             .populate('company', 'name logoImage')
             .sort({ createdAt: -1 });
@@ -384,7 +389,7 @@ app.get('/api/company/me', verifyToken, async (req, res) => {
     }
 });
 
-
+//  Route to Update Company Profile
 app.put('/api/company/update', verifyToken, upload.fields([
     { name: 'logoImage' }
 ]), async (req, res) => {
@@ -468,6 +473,7 @@ app.get('/api/applied-jobs', verifyToken, async (req, res) => {
         res.status(200).json(applications);
     } catch (error) {
         console.error('Error fetching applied jobs:', error);
+        console.log("Error fetching applied jobs:", error);
         res.status(500).json({ message: 'Server error while fetching applied jobs' });
     }
 });
