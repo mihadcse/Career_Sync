@@ -110,13 +110,19 @@ const Card = ({ data, isApplied }) => {
         <div className="mt-4 flex gap-2">
           <button
             // onClick={handleUpdate}
-            className="w-1/2 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
+            className="w-1/2 py-2 bg-sky-600 text-white rounded-md hover:bg-cyan-900 transition duration-300"
           >
             Update
           </button>
           <button
             // onClick={handleDelete}
-            className="w-1/2 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+            className="w-1/2 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-900 transition duration-300"
+          >
+            Applications 
+          </button>
+          <button
+            // onClick={handleDelete}
+            className="w-1/2 py-2 bg-red-600 text-white rounded-md hover:bg-red-900  transition duration-300"
           >
             Delete
           </button>
