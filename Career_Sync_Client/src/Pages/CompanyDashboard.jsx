@@ -73,7 +73,7 @@ const CompanyDashboard = () => {
       setName(res.data.name);
       setLogoImage(res.data.logoImage);
       alert('Profile updated successfully!');
-      //window.location.reload(); // Reload the page to reflect changes
+      window.location.reload(); // Reload the page to reflect changes
     } catch (error) {
       console.error('Failed to update profile:', error);
     }

@@ -43,6 +43,7 @@ const Card = ({ data, isApplied }) => {
       if (response.ok) {
         setIsJobApplied(true);
         alert('Job application submitted successfully!');
+        window.location.reload(); // Reload the page to reflect changes
       } else {
         alert('Failed to apply for the job');
       }
@@ -67,6 +68,7 @@ const Card = ({ data, isApplied }) => {
       if (response.ok) {
         setIsJobApplied(false);
         alert('Job application removed successfully!');
+        window.location.reload(); // Reload the page to reflect changes
       } else {
         alert(result.message || 'Failed to remove application');
       }

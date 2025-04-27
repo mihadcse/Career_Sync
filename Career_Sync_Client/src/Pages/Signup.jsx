@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import validator from 'validator';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -28,6 +29,22 @@ const Signup = () => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
+
+    const passwordInput = formData.password;
+
+    // Password strength validation before sending API request
+    const isPasswordStrong = validator.isStrongPassword(passwordInput, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    });
+
+    if (!isPasswordStrong) {
+      setErrorMessage('Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol.');
+      return; // Stop form submission if password is weak
+    }
 
     try {
       let response;
@@ -68,6 +85,7 @@ const Signup = () => {
 
       data = await response.json();
       if (response.ok) {
+        setErrorMessage('');
         setSuccessMessage('Registation successful!');
         //alert('Registation successful');
 
