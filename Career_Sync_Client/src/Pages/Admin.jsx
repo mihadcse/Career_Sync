@@ -49,7 +49,7 @@ const Admin = () => {
 
     const handleApprove = async (companyId) => {
         try {
-            await axios.put(`/api/approve-company/${companyId}`);
+            await axios.put(`http://localhost:3000/api/approve-company/${companyId}`);
             alert('Company approved successfully!');
             // Refresh the list
             fetchPendingCompanies();
@@ -98,7 +98,7 @@ const Admin = () => {
 
     // Render pending companies if logged in
     return (
-        <div className='pt-16 px-4 md:px-8 py-8'>
+        <div className='pt-20 px-4 md:px-8 py-8'>
             <h2 className='text-3xl font-bold text-cyan-400 text-center mb-6'>Pending Companies for Approval</h2>
 
             {pendingCompanies.length === 0 ? (
@@ -126,7 +126,7 @@ const Admin = () => {
                                 onClick={() => handleApprove(company._id)}
                                 className="mt-4 w-full bg-cyan-600 hover:bg-cyan-400 text-white font-semibold py-2 rounded transition duration-300"
                             >
-                                Approve Company
+                                Approve
                             </button>
                         </div>
                     ))}
