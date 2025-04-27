@@ -44,7 +44,7 @@ const Statistics = () => {
 
                         <div className="bg-opacity-10 p-6 rounded-lg shadow-xl shadow-cyan-500 text-center text-white">
                             <h2 className="text-4xl font-bold">{stats.totalCompany}</h2>
-                            <p className="text-lg">Registered Companies</p>
+                            <p className="text-lg">Registered Approved Companies</p>
                         </div>
 
                         <div className="bg-opacity-10 p-6 rounded-lg shadow-xl shadow-cyan-500 text-center text-white">

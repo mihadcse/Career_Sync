@@ -23,7 +23,7 @@ const Company = () => {
     return (
         <div className="pt-16 bg-black/30 min-h-screen">
             <div className="text-white py-16 text-center">
-                <h1 className="text-4xl font-bold text-cyan-400">Registered Companies</h1>
+                <h1 className="text-4xl font-bold text-cyan-400">Registered Approved Companies</h1>
                 <p className="text-lg text-gray-300 mt-2">Explore our partnered companies</p>
             </div>
 

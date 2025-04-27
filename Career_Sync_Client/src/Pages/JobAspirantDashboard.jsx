@@ -48,6 +48,9 @@ const JobAspirantDashboard = () => {
         setOldJobs([]);
       }
       setPreferredJobTypes(preferredJobTypes || []);
+      // console.log("New Jobs:", newJobs);
+      // console.log("Old Jobs:", oldJobs);
+      // console.log("Preferred Job Types:", preferredJobTypes);
     } catch (error) {
       console.error('Error fetching preferred jobs:', error);
     }

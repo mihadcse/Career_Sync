@@ -105,20 +105,30 @@ app.post('/api/post-job', verifyToken, async (req, res) => {
 });
 
 
-// GET jobs with company logo and other info
+// GET jobs with company logo and other info which are approved
 app.get('/api/jobs', async (req, res) => {
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 }).populate('company');
+        //const jobs = await Job.find().sort({ createdAt: -1 }).populate('company');
+        const jobs = await Job.find()
+            .sort({ createdAt: -1 })
+            .populate({
+                path: 'company',
+                match: { isApproved: true }, // Only include companies that are approved
+                select: 'name logoImage website description',
+            });
 
-        const jobsWithCompanyData = jobs.map((job) => ({
-            ...job.toObject(),
-            company: job.company ? {
-                name: job.company.name,
-                logoImage: job.company.logoImage,
-                website: job.company.website,
-                description: job.company.description,
-            } : null
-        }));
+        // Filter out jobs where the company is not approved (company will be null if not approved)
+        const jobsWithCompanyData = jobs
+            .filter(job => job.company)  // Remove jobs where company is not approved
+            .map((job) => ({
+                ...job.toObject(),
+                company: {
+                    name: job.company.name,
+                    logoImage: job.company.logoImage,
+                    website: job.company.website,
+                    description: job.company.description,
+                }
+            }));
 
         res.status(200).json(jobsWithCompanyData);
     } catch (error) {
@@ -353,21 +363,31 @@ app.get('/api/job-aspirant/matching-jobs', verifyToken, async (req, res) => {
             $or: preferredTypes.map(type => ({
                 jobTitle: { $regex: new RegExp(`^${type}$`, 'i') }  // case-insensitive exact match
             })),
-            _id: { $nin: appliedJobIds } // Exclude already applied jobs
+            _id: { $nin: appliedJobIds }, // Exclude already applied jobs
+            //'company.isApproved': true, 
         })
-            .populate('company', 'name logoImage')
+            .populate({
+                path: 'company',
+                select: 'name logoImage isApproved',
+            })
             .sort({ createdAt: -1 });
+        
+        // Filter out jobs that do not have an approved company
+        const filteredJobs = allMatchingJobs.filter(job => 
+            job.company &&  // Check company exists
+            job.company.isApproved === true // Verify approval
+        );
 
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - 2); // jobs added in last 2 days = "new"
 
-        const newJobs = allMatchingJobs.filter(job => job.createdAt >= cutoffDate);
-        const oldJobs = allMatchingJobs.filter(job => job.createdAt < cutoffDate);
+        const newJobs = filteredJobs.filter(job => job.createdAt >= cutoffDate);
+        const oldJobs = filteredJobs.filter(job => job.createdAt < cutoffDate);
 
-        res.json({ newJobs, oldJobs, allMatchingJobs, preferredJobTypes: user.preferredJobTypes });
+        res.json({ newJobs, oldJobs, allMatchingJobs: filteredJobs, preferredJobTypes: user.preferredJobTypes });
         //res.json({ newJobs, oldJobs, allMatchingJobs });
         console.log("Preferred job types:", user.preferredJobTypes);
-        console.log("Matched job titles:", allMatchingJobs.map(job => job.jobTitle));
+        console.log("Matched job titles:", filteredJobs.map(job => job.jobTitle));
         // console.log("New Jobs:", newJobs);
         // console.log("Old Jobs:", oldJobs);
     } catch (err) {
