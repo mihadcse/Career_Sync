@@ -36,11 +36,18 @@ const JobAspirantDashboard = () => {
       const res = await axios.get('http://localhost:3000/api/job-aspirant/matching-jobs', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const { preferredJobTypes } = res.data;
+      const { preferredJobTypes, newJobs, oldJobs } = res.data;
       console.log("Fetched Jobs Data:", res.data);
-      setNewJobs(res.data.newJobs || []);
-      setOldJobs(res.data.oldJobs || []);
-      setPreferredJobTypes(res.data.preferredJobTypes || []);
+      // setNewJobs(res.data.newJobs || []);
+      // setOldJobs(res.data.oldJobs || []);
+      if (preferredJobTypes && preferredJobTypes.length > 0) {
+        setNewJobs(newJobs || []);
+        setOldJobs(oldJobs || []);
+      } else {
+        setNewJobs([]);
+        setOldJobs([]);
+      }
+      setPreferredJobTypes(preferredJobTypes || []);
     } catch (error) {
       console.error('Error fetching preferred jobs:', error);
     }
@@ -214,7 +221,7 @@ const JobAspirantDashboard = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               alert('Job type added to preferences!');
-              //window.location.reload(); // Reload the page to reflect changes
+              window.location.reload(); // Reload the page to reflect changes
             }}
             className="bg-primary m-2 hover:bg-primary-dark px-4 py-2 rounded text-white"
           >
