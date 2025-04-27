@@ -10,10 +10,11 @@ const CompanyDashboard = () => {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [createdJobs, setCreatedJobs] = useState([]);
   const [companyId, setCompanyId] = useState('');
+  const [isApproved, setIsApproved] = useState(false);
 
   const token = localStorage.getItem('token');
 
-  // Fetch Crearted jobs
+  // Fetch Created jobs
   const fetchCreatedJobs = async () => {
     try {
       const res = await axios.get('http://localhost:3000/api/company/jobs', {
@@ -35,11 +36,12 @@ const CompanyDashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const { name, logoImage } = response.data;
+        const { name, logoImage, isApproved } = response.data;
         setName(name);
         setNewName(name);
         setLogoImage(logoImage);
         setCompanyId(localStorage.getItem('userId'));
+        setIsApproved(isApproved); // Set the isApproved state
       } catch (error) {
         console.error('Failed to fetch aspirant data:', error);
       }
@@ -82,6 +84,12 @@ const CompanyDashboard = () => {
 
   return (
     <div className="pt-20 px-4 md:px-24 bg-black/30 min-h-screen text-white">
+      <h1 className="text-4xl font-semibold mb-2 text-center">Company Dashboard</h1>
+      <h2 className="text-2xl font-semibold mb-2 text-center">Approval State - 
+        <span className={isApproved ? 'text-green-400' : 'text-red-400'}>
+          {isApproved ? ' Approved' : ' Not Approved'}
+        </span>
+      </h2>
       <h2 className="text-2xl md:text-3xl font-semibold mb-6">
         Welcome, <span className="text-primary">{name || 'Aspirant'}</span>!
       </h2>

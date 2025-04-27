@@ -404,6 +404,7 @@ app.get('/api/company/me', verifyToken, async (req, res) => {
         res.json({
             name: user.name,
             logoImage: user.logoImage,
+            isApproved: user.isApproved, // isApproved field
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
