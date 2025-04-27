@@ -9,6 +9,19 @@ const Card = ({ data, isApplied }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
   const [isJobApplied, setIsJobApplied] = useState(isApplied);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [updatedJobData, setUpdatedJobData] = useState({
+    jobTitle: jobTitle,
+    minPrice: minPrice,
+    maxPrice: maxPrice,
+    salaryType: salaryType,
+    jobLocation: jobLocation,
+    postingDate: postingDate,
+    experienceLevel: "", // you can modify this
+    employmentType: employmentType,
+    description: description,
+  });
+
 
   const location = useLocation();
 
@@ -63,6 +76,33 @@ const Card = ({ data, isApplied }) => {
     }
   };
 
+  const handleUpdateJob = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:3000/api/company/update-job/${_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(updatedJobData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Job updated successfully!');
+        setShowUpdateForm(false); // Hide the form
+        //window.location.reload(); 
+      } else {
+        alert(result.message || 'Failed to update job');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error updating the job');
+    }
+  }
+
+
   // Check login status on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -88,37 +128,21 @@ const Card = ({ data, isApplied }) => {
         </div>
       </Link>
       {/* Show Apply Button Only If Logged In as a job aspirant. Show Update and Delete button when as Company */}
-      {/* {isLoggedIn && role !== "company" && (
-        <div className='mt-4'>
-          {isJobApplied ? (
-            <button
-              onClick={handleRemove}
-              className='w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300'>
-              Remove
-            </button>
-          ) : (
-            <button
-              onClick={handleApply}
-              className='w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300'>
-              Apply
-            </button>
-          )}
-        </div>
-      )} */}
       {isLoggedIn && role === "company" && location.pathname === "/company-dashboard" ? (
         // Company buttons
         <div className="mt-4 flex gap-2">
           <button
-            // onClick={handleUpdate}
+            onClick={() => setShowUpdateForm(!showUpdateForm)}
             className="w-1/2 py-2 bg-sky-600 text-white rounded-md hover:bg-cyan-900 transition duration-300"
           >
-            Update
+            {showUpdateForm ? "Cancel" : "Update"}
           </button>
+
           <button
             // onClick={handleDelete}
             className="w-1/2 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-900 transition duration-300"
           >
-            Applications 
+            Applications
           </button>
           <button
             // onClick={handleDelete}
@@ -129,7 +153,7 @@ const Card = ({ data, isApplied }) => {
         </div>
       ) : (
         // Normal user buttons
-        isLoggedIn && role !== "company"  && location.pathname !== "/company-dashboard" &&  (
+        isLoggedIn && role !== "company" && location.pathname !== "/company-dashboard" && (
           <div className="mt-4">
             {isJobApplied ? (
               <button
@@ -150,6 +174,54 @@ const Card = ({ data, isApplied }) => {
         )
       )}
 
+      {showUpdateForm && (
+        <form onSubmit={handleUpdateJob} className="flex flex-col gap-2 mt-4 text-black">
+          <input
+            type="text"
+            value={updatedJobData.jobTitle}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobTitle: e.target.value })}
+            placeholder="Job Title"
+            className="p-2 border rounded"
+          />
+          <input
+            type="number"
+            value={updatedJobData.minPrice}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, minPrice: e.target.value })}
+            placeholder="Minimum Salary"
+            className="p-2 border rounded"
+          />
+          <input
+            type="number"
+            value={updatedJobData.maxPrice}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, maxPrice: e.target.value })}
+            placeholder="Maximum Salary"
+            className="p-2 border rounded"
+          />
+          <input
+            type="text"
+            value={updatedJobData.salaryType}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, salaryType: e.target.value })}
+            placeholder="Salary Type"
+            className="p-2 border rounded"
+          />
+          <input
+            type="text"
+            value={updatedJobData.jobLocation}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobLocation: e.target.value })}
+            placeholder="Job Location"
+            className="p-2 border rounded"
+          />
+          <textarea
+            value={updatedJobData.description}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, description: e.target.value })}
+            placeholder="Description"
+            className="p-2 border rounded"
+          />
+          <button type="submit" className="py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
+            Submit Update
+          </button>
+        </form>
+      )}
 
     </section>
   );
