@@ -175,41 +175,41 @@ const Card = ({ data, isApplied }) => {
       )}
 
       {showUpdateForm && (
-        <form onSubmit={handleUpdateJob} className="flex flex-col gap-2 mt-4 text-black">
+        <form onSubmit={handleUpdateJob} className="flex flex-col gap-2 mt-4 text-white">
           <input
             type="text"
             value={updatedJobData.jobTitle}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobTitle: e.target.value })}
             placeholder="Job Title"
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
           <input
             type="number"
             value={updatedJobData.minPrice}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, minPrice: e.target.value })}
             placeholder="Minimum Salary"
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
           <input
             type="number"
             value={updatedJobData.maxPrice}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, maxPrice: e.target.value })}
             placeholder="Maximum Salary"
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
           <input
             type="text"
             value={updatedJobData.salaryType}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, salaryType: e.target.value })}
             placeholder="Salary Type"
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
 
           {/* Location select box */}
           <select
             value={updatedJobData.jobLocation}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobLocation: e.target.value })}
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           >
             <option value='' disabled>Select a location</option>
             <option value='Dhaka'>Dhaka</option>
@@ -227,17 +227,17 @@ const Card = ({ data, isApplied }) => {
             type="date"
             value={updatedJobData.postingDate}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, postingDate: e.target.value })}
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
 
           <textarea
             value={updatedJobData.description}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, description: e.target.value })}
             placeholder="Description"
-            className="p-2 border rounded bg-slate-200"
+            className="p-2 border rounded bg-black/50"
           />
           <button type="submit" className="bg-sky-600 hover:bg-sky-900 px-4 py-2 rounded text-white m-2">
-            Submit Update
+            Update
           </button>
         </form>
       )}

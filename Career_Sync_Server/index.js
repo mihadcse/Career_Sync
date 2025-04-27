@@ -540,6 +540,28 @@ app.put('/api/company/update-job/:id', verifyToken, async (req, res) => {
       }
 })
 
+// Deleting a specific job
+app.delete('/api/company/delete-job/:id', verifyToken, async (req, res) => {
+    try {
+        const { jobId } = req.params;
+    
+        // First, delete the Job
+        const deletedJob = await Job.findByIdAndDelete(jobId);
+    
+        if (!deletedJob) {
+          return res.status(404).json({ message: 'Job not found' });
+        }
+    
+        // Then, delete all related JobApplications
+        await JobApplication.deleteMany({ job: jobId });
+    
+        res.status(200).json({ message: 'Job and related applications deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting job:', error);
+        res.status(500).json({ message: 'Server error' });
+      }
+})
+
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
 }) 
