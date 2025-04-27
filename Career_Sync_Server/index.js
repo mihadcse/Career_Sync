@@ -636,6 +636,28 @@ app.put('/api/approve-company/:id', async (req, res) => {
     }
 });
 
+// Get all pending companies (not approved yet)
+app.get('/api/companies-pending', async (req, res) => {
+    try {
+        console.log("Fetching pending companies...");
+
+        const pendingCompanies = await Company.find({ isApproved: false })
+            .select('logo name website location');  // only select needed fields
+
+        if (!pendingCompanies || pendingCompanies.length === 0) {
+            return res.status(404).json({ message: "No pending companies found" });
+        }
+
+        res.status(200).json(pendingCompanies);
+
+        console.log("Pending companies fetched:", pendingCompanies);
+    } catch (error) {
+        console.error('Error fetching pending companies:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
 }) 
