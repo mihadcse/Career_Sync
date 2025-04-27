@@ -37,10 +37,13 @@ const Admin = () => {
 
     const fetchPendingCompanies = async () => {
         try {
-            const res = await axios.get('/api/companies-pending');
-            setPendingCompanies(res.data);
+            const res = await axios.get('http://localhost:3000/api/companies-pending');
+            // Ensure always to get an array
+            const data = Array.isArray(res.data) ? res.data : [];
+            setPendingCompanies(data || []);
         } catch (error) {
             console.error('Error fetching pending companies:', error.message);
+            setPendingCompanies([]); // Set empty array on error
         }
     };
 
@@ -93,21 +96,37 @@ const Admin = () => {
         )
     }
 
+    // Render pending companies if logged in
     return (
-        <div className='pt-20 text-center'>
-            <h2 className='text-3xl font-semibold text-cyan-400 mb-6'>Pending Companies for Approval</h2>
+        <div className='pt-16 px-4 md:px-8 py-8'>
+            <h2 className='text-3xl font-bold text-cyan-400 text-center mb-6'>Pending Companies for Approval</h2>
+
             {pendingCompanies.length === 0 ? (
-                <p className='text-white'>No companies pending approval.</p>
+                <p className='text-white text-center'>No companies pending approval.</p>
             ) : (
-                <div className='space-y-4'>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {pendingCompanies.map((company) => (
-                        <div key={company._id} className='bg-black/50 p-4 rounded border border-cyan-500'>
-                            <h3 className='text-white text-xl'>{company.name}</h3>
-                            <p className='text-gray-400'>{company.email}</p>
+                        <div key={company._id} className="bg-black/40 border-2 border-cyan-300 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                            <div className="flex flex-col items-center mb-4">
+                                {company.logoImage && (
+                                    <img
+                                        src={`http://localhost:3000${company.logoImage}`}
+                                        alt={`${company.name} logo`}
+                                        className="w-24 h-24 rounded-full object-cover mb-4"
+                                    />
+                                )}
+                                <h2 className="text-xl font-semibold text-white text-center mb-2">
+                                    {company.name}
+                                </h2>
+                                <p className="text-cyan-400 text-center mb-1">{company.website}</p>
+                                <p className="text-gray-400 text-center">{company.location}</p>
+                            </div>
+
                             <button
                                 onClick={() => handleApprove(company._id)}
-                                className='mt-2 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded'>
-                                Approve
+                                className="mt-4 w-full bg-cyan-600 hover:bg-cyan-400 text-white font-semibold py-2 rounded transition duration-300"
+                            >
+                                Approve Company
                             </button>
                         </div>
                     ))}

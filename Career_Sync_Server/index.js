@@ -642,11 +642,7 @@ app.get('/api/companies-pending', async (req, res) => {
         console.log("Fetching pending companies...");
 
         const pendingCompanies = await Company.find({ isApproved: false })
-            .select('logo name website location');  // only select needed fields
-
-        if (!pendingCompanies || pendingCompanies.length === 0) {
-            return res.status(404).json({ message: "No pending companies found" });
-        }
+            .select('logoImage name website location');  // only select needed fields
 
         res.status(200).json(pendingCompanies);
 
