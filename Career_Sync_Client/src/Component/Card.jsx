@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const Card = ({ data, isApplied }) => {
@@ -9,6 +9,8 @@ const Card = ({ data, isApplied }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
   const [isJobApplied, setIsJobApplied] = useState(isApplied);
+
+  const location = useLocation();
 
   const handleApply = async () => {
     try {
@@ -85,17 +87,8 @@ const Card = ({ data, isApplied }) => {
           <p className='text-white/90 break-words w-72 whitespace-wrap'>{description}</p>
         </div>
       </Link>
-      {/* Render Apply Button Only If Logged In */}
+      {/* Show Apply Button Only If Logged In as a job aspirant. Show Update and Delete button when as Company */}
       {/* {isLoggedIn && role !== "company" && (
-        <div className='mt-4'>
-          <button
-            onClick={handleApply}
-            className='w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300'>
-            Apply
-          </button>
-        </div>
-      )} */}
-      {isLoggedIn && role !== "company" && (
         <div className='mt-4'>
           {isJobApplied ? (
             <button
@@ -111,7 +104,46 @@ const Card = ({ data, isApplied }) => {
             </button>
           )}
         </div>
+      )} */}
+      {isLoggedIn && role === "company" && location.pathname === "/company-dashboard" ? (
+        // Company buttons
+        <div className="mt-4 flex gap-2">
+          <button
+            // onClick={handleUpdate}
+            className="w-1/2 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
+          >
+            Update
+          </button>
+          <button
+            // onClick={handleDelete}
+            className="w-1/2 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+          >
+            Delete
+          </button>
+        </div>
+      ) : (
+        // Normal user buttons
+        isLoggedIn && role !== "company"  && location.pathname !== "/company-dashboard" &&  (
+          <div className="mt-4">
+            {isJobApplied ? (
+              <button
+                onClick={handleRemove}
+                className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+              >
+                Remove
+              </button>
+            ) : (
+              <button
+                onClick={handleApply}
+                className="w-full py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition duration-300"
+              >
+                Apply
+              </button>
+            )}
+          </div>
+        )
       )}
+
 
     </section>
   );

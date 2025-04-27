@@ -143,10 +143,10 @@ const CompanyDashboard = () => {
       <br />
       <br />
       <div>
-        <h3 className="text-xl m-4 text-cyan-400 font-semibold">Created Jobs</h3>
+        <h3 className="text-3xl m-4 text-cyan-400 font-semibold">Created Jobs</h3>
         {/* Showing preferred job types */}
         {createdJobs.length > 0 && (
-          <div className="grid gap-4 w-11/12">
+          <div className="grid gap-4 w-8/12">
             {createdJobs.length > 0 ? (
               createdJobs.map((job, index) => (
                 <Card key={index} data={job} />
