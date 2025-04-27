@@ -636,7 +636,6 @@ app.put('/api/approve-company/:id', async (req, res) => {
     }
 });
 
-
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
 }) 

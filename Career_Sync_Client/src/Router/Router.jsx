@@ -10,6 +10,7 @@ import ProtectedRoute from "../Component/ProtectedRoute";
 import Statistics from "../Pages/Statistics";
 import Company from "../Pages/Company";
 import JobApplication from "../Pages/JobApplication";
+import Admin from "../Pages/Admin";
 
 
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "/", element: <Home /> },
+            { path: "/admin", element: <Admin /> },
             { path: "/post-job", element: <CreateJob /> },
             { path: "/login", element: <Login /> },
             { path: "/sign-up", element: <Signup /> },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -78,7 +78,7 @@ const Login = () => {
             Login
           </button>
         </form>
-        <p className='text-center text-white mt-4'> Want to login as ADMIN? <span className='text-cyan-400 cursor-pointer'>Admin Login</span></p>
+        <p className='text-center text-white mt-4'> Want to login as ADMIN? <Link to={"/admin"}  className='text-cyan-400 cursor-pointer'>Admin Login</Link></p>
       </div>
     </div>
   );
