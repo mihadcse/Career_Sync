@@ -135,7 +135,7 @@ const Card = ({ data, isApplied }) => {
 
   return (
     <section className='card border border-cyan-300 p-4 rounded-lg shadow-lg hover:border-cyan-400 hover:shadow-md hover:shadow-cyan-500 hover:bg-gray-800 transition duration-300'>
-      <Link to={"/"} className='flex gap-4 flex-col sm:flex-row items-start'>
+      <Link to={"#"} className='flex gap-4 flex-col sm:flex-row items-start'>
         <img src={`http://localhost:3000${company?.logoImage}`} alt={`${company?.name} logo`} className='w-20 h-20 object-contain rounded-md' />
         <div>
           <h4 className='text-cyan-300 mb-1 text-xl'>{company?.name}</h4>
@@ -164,7 +164,8 @@ const Card = ({ data, isApplied }) => {
             onClick={() => {
               if (data._id) {
                 console.log(data._id);
-                navigate(`/company-dashboard/applications/${data._id}`);
+                localStorage.setItem("jobId", data._id); // Store jobId in localStorage
+                navigate("/company-dashboard/applications");
               } else {
                 alert("Job ID is missing");
               }

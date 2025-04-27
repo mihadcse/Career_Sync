@@ -572,11 +572,15 @@ app.get('/api/company/job-applications/:jobId', verifyToken, async (req, res) =>
             return res.status(400).json({ message: "Invalid job ID" });
         }
 
-        // Find all job applications for this job, populate aspirant info
         const applications = await JobApplication.find({ job: jobId })
             .populate('jobAspirant', 'name profileImage cvImage');
 
+        if (!applications) {
+            return res.status(404).json({ message: "No applications found" });
+        }
+
         res.status(200).json(applications);
+
         console.log("Applications for job ID:", jobId, applications);
     } catch (error) {
         console.error('Error fetching applications:', error);

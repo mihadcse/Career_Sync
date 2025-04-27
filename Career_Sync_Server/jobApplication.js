@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const jobApplicationSchema = new mongoose.Schema({
   jobAspirant: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'JobAspirant', // Reference to the JobAspirant model
+    ref: 'JobAspirant', // Reference to the JobAspirant model 
     required: true
   },
   job: {

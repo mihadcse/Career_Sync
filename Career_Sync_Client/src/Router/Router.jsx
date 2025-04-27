@@ -20,7 +20,7 @@ const router = createBrowserRouter([
             { path: "/", element: <Home /> },
             { path: "/post-job", element: <CreateJob /> },
             { path: "/login", element: <Login /> },
-            { path: "/sign-up", element: <Signup /> }, 
+            { path: "/sign-up", element: <Signup /> },
             { path: "/statistics", element: <Statistics /> },
             { path: "/companies", element: <Company /> },
             {
@@ -39,7 +39,14 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
-            { path: "/company-dashboard/applications/:jobId", element: <JobApplication /> },
+            {
+                path: "/company-dashboard/applications",
+                element: (
+                    <ProtectedRoute allowedRoles={["company"]}>
+                        <JobApplication />
+                    </ProtectedRoute>
+                ),
+            },
         ]
     },
 ]);
