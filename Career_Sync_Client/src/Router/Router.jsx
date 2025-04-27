@@ -9,6 +9,7 @@ import JobAspirantDashboard from "../Pages/JobAspirantDashboard";
 import ProtectedRoute from "../Component/ProtectedRoute";
 import Statistics from "../Pages/Statistics";
 import Company from "../Pages/Company";
+import JobApplication from "../Pages/JobApplication";
 
 
 const router = createBrowserRouter([
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
+            { path: "/company-dashboard/applications/:jobId", element: <JobApplication /> },
         ]
     },
 ]);

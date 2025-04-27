@@ -566,12 +566,18 @@ app.delete('/api/company/delete-job/:jobId', verifyToken, async (req, res) => {
 app.get('/api/company/job-applications/:jobId', verifyToken, async (req, res) => {
     try {
         const { jobId } = req.params;
+        console.log("Fetching applications for job ID:", jobId);
+
+        if (!mongoose.Types.ObjectId.isValid(jobId)) {
+            return res.status(400).json({ message: "Invalid job ID" });
+        }
 
         // Find all job applications for this job, populate aspirant info
         const applications = await JobApplication.find({ job: jobId })
             .populate('jobAspirant', 'name profileImage cvImage');
 
         res.status(200).json(applications);
+        console.log("Applications for job ID:", jobId, applications);
     } catch (error) {
         console.error('Error fetching applications:', error);
         res.status(500).json({ message: 'Server error' });

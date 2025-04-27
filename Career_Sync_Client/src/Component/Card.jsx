@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiClock, FiMapPin } from 'react-icons/fi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const Card = ({ data, isApplied }) => {
@@ -23,6 +23,7 @@ const Card = ({ data, isApplied }) => {
   });
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleApply = async () => {
     try {
@@ -91,7 +92,7 @@ const Card = ({ data, isApplied }) => {
       if (response.ok) {
         alert('Job updated successfully!');
         setShowUpdateForm(false); // Hide the form
-        window.location.reload(); 
+        window.location.reload();
       } else {
         alert(result.message || 'Failed to update job');
       }
@@ -110,7 +111,7 @@ const Card = ({ data, isApplied }) => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
-  
+
       const result = await response.json();
       if (response.ok) {
         alert('Job deleted successfully!');
@@ -123,7 +124,7 @@ const Card = ({ data, isApplied }) => {
       alert('Error deleting the job');
     }
   };
-  
+
   // Check login status on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -160,7 +161,14 @@ const Card = ({ data, isApplied }) => {
           </button>
 
           <button
-            // onClick={handleApplications}
+            onClick={() => {
+              if (data._id) {
+                console.log(data._id);
+                navigate(`/company-dashboard/applications/${data._id}`);
+              } else {
+                alert("Job ID is missing");
+              }
+            }}
             className="w-1/2 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-900 transition duration-300"
           >
             Applications
