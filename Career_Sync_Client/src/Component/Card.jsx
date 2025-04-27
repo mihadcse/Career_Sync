@@ -160,7 +160,7 @@ const Card = ({ data, isApplied }) => {
           </button>
 
           <button
-            // onClick={handleDelete}
+            // onClick={handleApplications}
             className="w-1/2 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-900 transition duration-300"
           >
             Applications

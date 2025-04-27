@@ -497,70 +497,86 @@ app.delete('/api/remove-applied-job', verifyToken, async (req, res) => {
 // get all created jobs by company
 app.get('/api/company/jobs', verifyToken, async (req, res) => {
     try {
-        const companyId = req.user.id; 
-    
+        const companyId = req.user.id;
+
         const jobs = await Job.find({ company: companyId })
-        .populate('company', 'name logoImage') // Populate company name and logo
-        .sort({ createdAt: -1 }); // latest first
-    
+            .populate('company', 'name logoImage') // Populate company name and logo
+            .sort({ createdAt: -1 }); // latest first
+
         res.status(200).json({ createdJobs: jobs });
-      } catch (error) {
+    } catch (error) {
         console.error("Failed to fetch company jobs:", error);
         res.status(500).json({ message: "Failed to fetch company jobs" });
-      }
+    }
 })
 
 // Updating a specific job
 app.put('/api/company/update-job/:id', verifyToken, async (req, res) => {
     try {
         const { id } = req.params;
-    
+
         const updatedFields = {
-          jobTitle: req.body.jobTitle,
-          minPrice: req.body.minPrice,
-          maxPrice: req.body.maxPrice,
-          salaryType: req.body.salaryType,
-          jobLocation: req.body.jobLocation,
-          postingDate: req.body.postingDate,
-          experienceLevel: req.body.experienceLevel,
-          employmentType: req.body.employmentType,
-          description: req.body.description,
+            jobTitle: req.body.jobTitle,
+            minPrice: req.body.minPrice,
+            maxPrice: req.body.maxPrice,
+            salaryType: req.body.salaryType,
+            jobLocation: req.body.jobLocation,
+            postingDate: req.body.postingDate,
+            experienceLevel: req.body.experienceLevel,
+            employmentType: req.body.employmentType,
+            description: req.body.description,
         };
-    
+
         const updatedJob = await Job.findByIdAndUpdate(id, updatedFields, { new: true });
-    
+
         if (!updatedJob) {
-          return res.status(404).json({ message: "Job not found" });
+            return res.status(404).json({ message: "Job not found" });
         }
-    
+
         res.status(200).json(updatedJob);
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server Error" });
-      }
+    }
 })
 
 // Deleting a specific job
 app.delete('/api/company/delete-job/:jobId', verifyToken, async (req, res) => {
     try {
         const { jobId } = req.params;
-    
+
         // First, delete the Job
         const deletedJob = await Job.findByIdAndDelete(jobId);
-    
+
         if (!deletedJob) {
-          return res.status(404).json({ message: 'Job not found' });
+            return res.status(404).json({ message: 'Job not found' });
         }
-    
+
         // Then, delete all related JobApplications
         await JobApplication.deleteMany({ job: jobId });
-    
+
         res.status(200).json({ message: 'Job and related applications deleted successfully' });
-      } catch (error) {
+    } catch (error) {
         console.error('Error deleting job:', error);
         res.status(500).json({ message: 'Server error' });
-      }
+    }
 })
+
+// Get all applications for a specific job
+app.get('/api/company/job-applications/:jobId', verifyToken, async (req, res) => {
+    try {
+        const { jobId } = req.params;
+
+        // Find all job applications for this job, populate aspirant info
+        const applications = await JobApplication.find({ job: jobId })
+            .populate('jobAspirant', 'name profileImage cvImage');
+
+        res.status(200).json(applications);
+    } catch (error) {
+        console.error('Error fetching applications:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`CareerSync app backend listening on port ${port}`)
