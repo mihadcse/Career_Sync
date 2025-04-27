@@ -181,47 +181,67 @@ const Card = ({ data, isApplied }) => {
             value={updatedJobData.jobTitle}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobTitle: e.target.value })}
             placeholder="Job Title"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
           />
           <input
             type="number"
             value={updatedJobData.minPrice}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, minPrice: e.target.value })}
             placeholder="Minimum Salary"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
           />
           <input
             type="number"
             value={updatedJobData.maxPrice}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, maxPrice: e.target.value })}
             placeholder="Maximum Salary"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
           />
           <input
             type="text"
             value={updatedJobData.salaryType}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, salaryType: e.target.value })}
             placeholder="Salary Type"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
           />
-          <input
-            type="text"
+
+          {/* Location select box */}
+          <select
             value={updatedJobData.jobLocation}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, jobLocation: e.target.value })}
-            placeholder="Job Location"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
+          >
+            <option value='' disabled>Select a location</option>
+            <option value='Dhaka'>Dhaka</option>
+            <option value='Chattogram'>Chattogram</option>
+            <option value='Sylhet'>Sylhet</option>
+            <option value='Mymensingh'>Mymensingh</option>
+            <option value='Rangpur'>Rangpur</option>
+            <option value='Barishal'>Barishal</option>
+            <option value='Khulna'>Khulna</option>
+            <option value='Rajshahi'>Rajshahi</option>
+          </select>
+
+          {/* Date Picker for Posting Date */}
+          <input
+            type="date"
+            value={updatedJobData.postingDate}
+            onChange={(e) => setUpdatedJobData({ ...updatedJobData, postingDate: e.target.value })}
+            className="p-2 border rounded bg-slate-200"
           />
+
           <textarea
             value={updatedJobData.description}
             onChange={(e) => setUpdatedJobData({ ...updatedJobData, description: e.target.value })}
             placeholder="Description"
-            className="p-2 border rounded"
+            className="p-2 border rounded bg-slate-200"
           />
-          <button type="submit" className="py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
+          <button type="submit" className="bg-sky-600 hover:bg-sky-900 px-4 py-2 rounded text-white m-2">
             Submit Update
           </button>
         </form>
       )}
+
 
     </section>
   );
