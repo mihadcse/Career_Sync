@@ -8,6 +8,12 @@ const About = () => {
       image: "/images/Mihad.jpg",
       bio: "ID: 210041218",
     },
+    {
+      name: "Zawad Bin Shoukat (Tasin)",
+      role: "Section 2(A), CSE",
+      image: "/images/Tasin.png",
+      bio: "ID: 210041257",
+    },
   ];
 
   return (
