@@ -5,7 +5,7 @@ const About = () => {
     {
       name: "Syed Huzzatullah Mihad",
       role: "Section 2(B), CSE",
-      image: "/images/Mihad.jpg",
+      image: "/images/Mihad.png",
       bio: "ID: 210041218",
     },
     {
