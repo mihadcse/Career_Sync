@@ -11,6 +11,7 @@ import Statistics from "../Pages/Statistics";
 import Company from "../Pages/Company";
 import JobApplication from "../Pages/JobApplication";
 import Admin from "../Pages/Admin";
+import About from "../Pages/About";
 
 
 const router = createBrowserRouter([
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
             { path: "/sign-up", element: <Signup /> },
             { path: "/statistics", element: <Statistics /> },
             { path: "/companies", element: <Company /> },
+            { path: "/about", element: <About /> },
             {
                 path: "/company-dashboard",
                 element: (
