@@ -1,0 +1,5 @@
+PORT=5000
+
+MONGODBURL=mongodb+srv://huzzatullah:UGD4SNyx8xG25kDs@career-sync-cluster.td4orhl.mongodb.net/
+
+JWT_SECRET=career_sync_secret

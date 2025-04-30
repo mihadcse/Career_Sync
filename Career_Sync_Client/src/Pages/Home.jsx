@@ -4,10 +4,12 @@ import Banner from "../Component/Banner";
 import Sidebar from "../sidebar/Sidebar";
 import Jobs from "./Jobs";
 import NewsLetter from "../Component/NewsLetter";
+import JobPostingData from "../sidebar/JobPostingData";
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [jobs, setJobs] = useState([]);
+  const [postingDate, setPostingDate] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [currentpage, setCurrentPage] = useState(1);
@@ -51,7 +53,13 @@ const Home = () => {
 
   // RADIO BUTTON FILTERRING FOR JOBS
   const handleChange = (event) => {
-    setSelectedCategory(event.target.value);
+    const { name, value } = event.target;
+
+    if (name === "postingDate") {
+      setPostingDate(value);
+    } else {
+      setSelectedCategory(value);
+    }
   };
 
   // BUTTON FILTERRING FOR JOBS
@@ -59,7 +67,7 @@ const Home = () => {
     setSelectedCategory(event.target.value);
   };
 
-  const FilteredData = (jobs, selected, query) => {
+  const FilteredData = (jobs, selected, query, postingDate) => {
     let filteredJobs = jobs;
 
     // Filter by search query
@@ -76,10 +84,27 @@ const Home = () => {
       });
     }
 
+    if (postingDate) {
+      const now = new Date();
+
+      filteredJobs = filteredJobs.filter(({ datePosted }) => {
+        const postedDate = new Date(datePosted);
+
+        if (postingDate === "last24hours") {
+          return now - postedDate <= 24 * 60 * 60 * 1000;
+        } else if (postingDate === "last7days") {
+          return now - postedDate <= 7 * 24 * 60 * 60 * 1000;
+        } else if (postingDate === "last30days") {
+          return now - postedDate <= 30 * 24 * 60 * 60 * 1000;
+        }
+        return true; // for 'All Time'
+      });
+    }
+
     return filteredJobs.map((data, i) => <Card key={i} data={data} />);
   };
 
-  const result = FilteredData(jobs, selectedCategory, query);
+  const result = FilteredData(jobs, selectedCategory, query, postingDate);
 
   //
 
