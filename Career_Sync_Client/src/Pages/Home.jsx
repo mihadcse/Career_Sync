@@ -4,6 +4,7 @@ import Card from '../Component/Card';
 import Banner from '../Component/Banner';
 import Sidebar from '../sidebar/Sidebar';
 import Jobs from './Jobs';
+import NewsLetter from '../Component/Newsletter';
 
 
 const Home = () => {
@@ -87,7 +88,7 @@ const Home = () => {
     <div>
       <Banner query={query} handleInputChange={handleInputChange} />
 
-      <div className='bg-black/30 md:grid grid-cols-4 gap-8 lg:px-24 px-4 py-12'>
+      <div className='bg-black/30 md:grid grid-cols-4 items-start gap-8 lg:px-24 px-4 py-12'>
         {/* MAIN CONTENT */}
 
         {/* LEFT cards */}
@@ -108,7 +109,9 @@ const Home = () => {
         </div>
 
         {/* RIGHT cards */}
-        <div className='z-10 bg-opacity-5 p-4 rounded shadow-md shadow-cyan-500'>Right</div>
+        <div className='z-10 bg-opacity-5 p-4 rounded shadow-md shadow-cyan-500'>
+          <NewsLetter />
+        </div>
         {/* bg-teal-300  */}
 
       </div>
