@@ -13,7 +13,7 @@ A Job Portal Web Application connecting companies with job aspirants.
 - React frontend with protected routes and role-based access control
 - Proper error handling and validation
 
-## 📺 Watch the Demo Video of This Game
+## 📺 Watch the Demo Video of Career_Sync
 
 [![Watch the video](https://img.youtube.com/vi/kMB9uJOQhzA/maxresdefault.jpg)]([https://www.youtube.com/watch?v=vbWuK4hSrFo](https://youtu.be/kMB9uJOQhzA?si=IjOVCLKvAeNMXKpm))
 
