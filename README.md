@@ -15,7 +15,7 @@ A Job Portal Web Application connecting companies with job aspirants.
 
 ## 📺 Watch the Demo Video of This Game
 
-[![Watch the video](https://img.youtube.com/vi/vbWuK4hSrFo/maxresdefault.jpg)]([https://www.youtube.com/watch?v=vbWuK4hSrFo](https://youtu.be/kMB9uJOQhzA?si=IjOVCLKvAeNMXKpm))
+[![Watch the video](https://img.youtube.com/vi/kMB9uJOQhzA/maxresdefault.jpg)]([https://www.youtube.com/watch?v=vbWuK4hSrFo](https://youtu.be/kMB9uJOQhzA?si=IjOVCLKvAeNMXKpm))
 
 ## Prerequisites
 Ensure you have the following installed on your system:
