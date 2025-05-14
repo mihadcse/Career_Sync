@@ -13,6 +13,10 @@ A Job Portal Web Application connecting companies with job aspirants.
 - React frontend with protected routes and role-based access control
 - Proper error handling and validation
 
+## 📺 Watch the Demo Video of This Game
+
+[![Watch the video](https://img.youtube.com/vi/vbWuK4hSrFo/maxresdefault.jpg)]([https://www.youtube.com/watch?v=vbWuK4hSrFo](https://youtu.be/kMB9uJOQhzA?si=IjOVCLKvAeNMXKpm))
+
 ## Prerequisites
 Ensure you have the following installed on your system:
 - [Node.js](https://nodejs.org/) 
